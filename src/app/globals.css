@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #faf8f5;
+  --bg-card: #ffffff;
+  --text-primary: #1a1a1a;
+  --text-secondary: #6b6b6b;
+  --text-muted: #9b9b9b;
+  --accent: #c0392b;
+  --accent-light: #fff0ee;
+  --accent-hover: #a93226;
+  --border: #e8e3dd;
+  --border-light: #f0ebe5;
+  --shadow: 0 2px 12px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 24px rgba(0,0,0,0.10);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1a1714;
+    --bg-card: #252220;
+    --text-primary: #f0ebe5;
+    --text-secondary: #a89e95;
+    --text-muted: #6b6258;
+    --accent: #e05a4e;
+    --accent-light: #3a1a18;
+    --accent-hover: #cc4a3e;
+    --border: #332e2a;
+    --border-light: #2a2520;
+    --shadow: 0 2px 12px rgba(0,0,0,0.25);
+    --shadow-md: 0 4px 24px rgba(0,0,0,0.35);
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #1a1714;
+  --bg-card: #252220;
+  --text-primary: #f0ebe5;
+  --text-secondary: #a89e95;
+  --text-muted: #6b6258;
+  --accent: #e05a4e;
+  --accent-light: #3a1a18;
+  --accent-hover: #cc4a3e;
+  --border: #332e2a;
+  --border-light: #2a2520;
+  --shadow: 0 2px 12px rgba(0,0,0,0.25);
+  --shadow-md: 0 4px 24px rgba(0,0,0,0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100dvh;
+}
+
+/* 커스텀 셀렉트 & 버튼 기본 초기화 */
+select, button, input {
+  font-family: inherit;
+}
