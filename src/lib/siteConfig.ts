@@ -10,3 +10,10 @@
  */
 export const BASE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || 'https://www.saengsinpyo.com';
+
+/**
+ * 네이버 서치어드바이저 소유확인 코드.
+ * 소유확인이 끝난 뒤에도 태그를 지우면 소유권이 해제되므로 그대로 둔다.
+ */
+export const NAVER_SITE_VERIFICATION =
+  process.env.NAVER_SITE_VERIFICATION || 'cc8bf1af1cf53486ed26105fab3ba57f7a879b92';

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { BASE_URL } from '@/lib/siteConfig';
+import { BASE_URL, NAVER_SITE_VERIFICATION } from '@/lib/siteConfig';
 
 export const metadata: Metadata = {
   title: '우리집 생신표 | 음력 생일 양력 변환',
@@ -55,10 +55,8 @@ export default function RootLayout({
     <html lang="ko">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-        {/* 네이버 서치어드바이저 소유권 인증 — 배포 후 발급받은 코드로 교체 */}
-        {process.env.NAVER_SITE_VERIFICATION && (
-          <meta name="naver-site-verification" content={process.env.NAVER_SITE_VERIFICATION} />
-        )}
+        {/* 네이버 서치어드바이저 소유확인 */}
+        <meta name="naver-site-verification" content={NAVER_SITE_VERIFICATION} />
         <link rel="alternate" type="application/rss+xml" title="우리집 생신표 RSS" href={`${BASE_URL}/feed.xml`} />
         <script
           type="application/ld+json"
