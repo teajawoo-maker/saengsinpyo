@@ -37,8 +37,9 @@ export default function HomePage() {
         </p>
       </header>
 
-      {/* 계산기 */}
+      {/* 계산기 — 저장된 생신을 누르면 key가 바뀌며 그 값으로 새로 마운트된다 */}
       <LunarCalculator
+        key={loadedItem?.id ?? 'new'}
         onSaved={handleSaved}
         initialItem={loadedItem}
       />

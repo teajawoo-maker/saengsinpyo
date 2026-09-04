@@ -87,8 +87,11 @@ export function formatSeasonalDate(date: Date): string {
 export function getDDayLabel(date: Date): string {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  date.setHours(0, 0, 0, 0);
-  const diff = Math.round((date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  // 인자로 받은 Date를 그대로 고치면 호출한 쪽의 값이 바뀐다.
+  // 렌더 중에 호출되므로 반드시 복사본을 쓴다.
+  const target = new Date(date);
+  target.setHours(0, 0, 0, 0);
+  const diff = Math.round((target.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
   if (diff === 0) return '오늘';
   if (diff > 0) return `D-${diff}`;
   return `D+${Math.abs(diff)}`;

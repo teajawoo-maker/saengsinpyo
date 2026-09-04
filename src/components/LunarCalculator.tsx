@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { convertLunar, solarToLunar, formatDDay, formatDate } from '@/lib/lunarConverter';
+import { convertLunar, solarToLunar, formatDDay } from '@/lib/lunarConverter';
+import { ageAtBirthday, getMilestone } from '@/lib/age';
 import { saveBirthday } from '@/lib/storage';
 import type { LunarInput, ConvertResult, LeapStatus, ShortMonthFallback, LeapFallback, SolarResult, InputMode } from '@/types/lunar';
 import type { SavedBirthday } from '@/lib/storage';
@@ -52,6 +53,9 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
   const [mode, setMode] = useState<InputMode>(initialItem ? 'lunar' : 'solar');
   const [solarForm, setSolarForm] = useState<SolarFormState>({ year: '', month: '', day: '' });
   const [solarError, setSolarError] = useState('');
+  // 나이와 환갑·칠순 계산에 필요한 양력 생년. 양력으로 입력했거나
+  // 생년이 저장된 항목을 불러온 경우에만 값이 있다.
+  const [birthYear, setBirthYear] = useState<number | undefined>(initialItem?.birthYear);
   const [result, setResult] = useState<ConvertResult | null>(null);
   const [showShare, setShowShare] = useState(false);
   const [showSaveInput, setShowSaveInput] = useState(false);
@@ -71,6 +75,7 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
       shortMonthFallback: form.shortMonthFallback,
       leapFallback: form.leapFallback,
     };
+    setBirthYear(undefined); // 음력 월/일만으로는 나이를 알 수 없다
     setResult(convertLunar(input));
   }, [form]);
 
@@ -88,6 +93,7 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
       return;
     }
     setSolarError('');
+    setBirthYear(year);
 
     const leapStatus: LeapStatus = lunar.isLeapMonth ? 'leap' : 'regular';
     setForm({
@@ -119,26 +125,18 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
       shortMonthFallback: form.shortMonthFallback,
       leapFallback: form.leapFallback,
     };
-    saveBirthday(label, input);
+    saveBirthday(label, input, birthYear);
     setSavedMsg(`'${label}' 저장됐어요!`);
     setShowSaveInput(false);
     setTimeout(() => setSavedMsg(''), 3000);
     onSaved?.();
-  }, [form, saveLabel, onSaved]);
+  }, [form, saveLabel, birthYear, onSaved]);
 
-  const loadItem = useCallback((item: SavedBirthday) => {
-    setForm({
-      month: String(item.input.month),
-      day: String(item.input.day),
-      leapStatus: item.input.leapStatus,
-      shortMonthFallback: item.input.shortMonthFallback,
-      leapFallback: item.input.leapFallback,
-    });
-    setSaveLabel(item.label);
-    const input = item.input;
-    setResult(convertLunar(input));
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
+  // 불러온 항목은 바로 결과까지 보여준다. 상태 초기값을 initialItem에서
+  // 잡으므로, 다른 항목을 누르면 page에서 key를 바꿔 새로 마운트시킨다.
+  useEffect(() => {
+    if (initialItem) setResult(convertLunar(initialItem.input));
+  }, [initialItem]);
 
   return (
     <>
@@ -373,6 +371,31 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
                 <div className="my-3 h-px" style={{ background: 'var(--border-light)' }} />
                 <ResultBlock label="내년" result={result.nextYear} isNearest={result.nearest === result.nextYear} />
 
+                {/* 다가오는 생신의 나이와 환갑·칠순 안내 */}
+                {birthYear && result.nearest && (() => {
+                  const age = ageAtBirthday(birthYear, result.nearest.year);
+                  const milestone = getMilestone(age);
+                  return (
+                    <div className="mt-4 pt-4" style={{ borderTop: '1px solid var(--border-light)' }}>
+                      <div className="flex items-baseline justify-center gap-2">
+                        <span className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                          {result.nearest.year}년 생신에
+                        </span>
+                        <span className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>
+                          만 {age}세
+                        </span>
+                      </div>
+                      {milestone && (
+                        <div className="mt-3 rounded-xl p-3 text-center"
+                          style={{ background: 'var(--accent)', color: '#fff' }}>
+                          <p className="text-base font-bold">🎉 {milestone.name} 생신이에요</p>
+                          <p className="text-xs mt-1 opacity-90">{milestone.description}</p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+
                 {/* 다가오는 생신이 있는 달의 달력 */}
                 {result.nearest && <MiniCalendar target={result.nearest} />}
 
@@ -422,11 +445,6 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
           </div>
         )}
 
-        {/* AdSense 슬롯 */}
-        <div className="rounded-2xl" aria-hidden="true"
-          style={{ background: 'var(--bg-card)', border: '1px dashed var(--border)', minHeight: '90px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          {/* 광고 영역 */}
-        </div>
       </div>
 
       {/* 공유 모달 */}

@@ -6,6 +6,11 @@ export interface SavedBirthday {
   id: string;
   label: string;       // 호칭 (예: 어머니, 할머니)
   input: LunarInput;
+  /**
+   * 양력 생년. 나이와 환갑·칠순 같은 기념 생신을 계산하는 데 쓴다.
+   * 연도 없이 음력 월/일만 입력한 경우도 있어 선택 항목이다.
+   */
+  birthYear?: number;
   savedAt: number;
   starred: boolean;
 }
@@ -27,17 +32,23 @@ function saveAll(items: SavedBirthday[]): void {
   } catch { /* 저장공간 부족 등 */ }
 }
 
+/**
+ * 저장된 항목을 최근 저장 순으로 돌려준다.
+ * 화면에 보여줄 때는 다가오는 생신 순으로 다시 정렬한다.
+ * 남은 날짜는 음력 변환을 해야 알 수 있어 여기서는 계산하지 않는다.
+ */
 export function getSaved(): SavedBirthday[] {
-  return loadAll().sort((a, b) => {
-    if (a.starred !== b.starred) return a.starred ? -1 : 1;
-    return b.savedAt - a.savedAt;
-  });
+  return loadAll().sort((a, b) => b.savedAt - a.savedAt);
 }
 
-export function saveBirthday(label: string, input: LunarInput): SavedBirthday {
+export function saveBirthday(
+  label: string,
+  input: LunarInput,
+  birthYear?: number
+): SavedBirthday {
   const items = loadAll();
   const id = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-  const item: SavedBirthday = { id, label, input, savedAt: Date.now(), starred: false };
+  const item: SavedBirthday = { id, label, input, birthYear, savedAt: Date.now(), starred: false };
   saveAll([...items, item]);
   return item;
 }
