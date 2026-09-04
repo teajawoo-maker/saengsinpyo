@@ -46,7 +46,10 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
     shortMonthFallback: initialItem?.input.shortMonthFallback ?? 'last',
     leapFallback: initialItem?.input.leapFallback ?? 'regular',
   });
-  const [mode, setMode] = useState<InputMode>('lunar');
+  // 기본은 양력 입력. 주민등록상 양력 생일만 아는 사람이 대부분이라
+  // 그쪽을 첫 화면으로 두고, 음력을 아는 경우를 보조 탭으로 둔다.
+  // 저장된 항목을 불러온 경우엔 음력 입력이므로 음력 탭으로 시작한다.
+  const [mode, setMode] = useState<InputMode>(initialItem ? 'lunar' : 'solar');
   const [solarForm, setSolarForm] = useState<SolarFormState>({ year: '', month: '', day: '' });
   const [solarError, setSolarError] = useState('');
   const [result, setResult] = useState<ConvertResult | null>(null);
@@ -147,8 +150,8 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
           {/* 입력 방식 전환 */}
           <div className="flex gap-2 mb-5 p-1 rounded-xl" style={{ background: 'var(--bg)' }}>
             {([
-              { value: 'lunar', label: '음력을 알아요' },
               { value: 'solar', label: '양력만 알아요' },
+              { value: 'lunar', label: '음력을 알아요' },
             ] as { value: InputMode; label: string }[]).map(opt => (
               <button key={opt.value} type="button"
                 onClick={() => { setMode(opt.value); setResult(null); setSolarError(''); }}

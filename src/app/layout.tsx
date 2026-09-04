@@ -20,11 +20,24 @@ export const metadata: Metadata = {
     type: 'website',
     url: BASE_URL,
     siteName: '우리집 생신표',
+    // 정적 파일을 절대 URL로 지정한다. 동적 생성(opengraph-image.tsx)은
+    // URL에 쿼리스트링이 붙고 must-revalidate/Vary 헤더가 걸리는데,
+    // 카카오톡 스크래퍼가 그런 이미지를 가져오지 못해 썸네일이 비었다.
+    images: [
+      {
+        url: `${BASE_URL}/og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: '우리집 생신표 — 음력 생일을 양력으로',
+        type: 'image/png',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: '우리집 생신표',
     description: '음력 생일을 양력으로 변환해 드려요.',
+    images: [`${BASE_URL}/og-image.png`],
   },
   robots: {
     index: true,
