@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     siteName: '우리집 생신표',
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: '우리집 생신표',
     description: '음력 생일을 양력으로 변환해 드려요.',
   },

@@ -28,3 +28,20 @@ export interface ConvertResult {
   nearest: SolarResult | null;
   error?: string;
 }
+
+/** 입력 방향: 음력을 알 때 vs 양력(주민등록) 생일만 알 때 */
+export type InputMode = 'lunar' | 'solar';
+
+export interface SolarInput {
+  year: number;    // 1900~2100
+  month: number;   // 1~12
+  day: number;     // 1~31
+}
+
+/** 양력 생년월일 → 그 사람의 음력 생일 */
+export interface SolarToLunarResult {
+  lunarMonth: number;
+  lunarDay: number;
+  isLeapMonth: boolean;
+  error?: string;
+}

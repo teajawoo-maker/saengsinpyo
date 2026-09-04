@@ -4,6 +4,8 @@ import type {
   SolarResult,
   ConvertResult,
   LeapStatus,
+  SolarInput,
+  SolarToLunarResult,
 } from '@/types/lunar';
 
 const DAYS_KO = ['일', '월', '화', '수', '목', '금', '토'];
@@ -142,6 +144,37 @@ export function convertLunar(input: LunarInput): ConvertResult {
   }
 
   return { thisYear: thisYearResult, nextYear: nextYearResult, nearest };
+}
+
+/**
+ * 양력 생년월일 → 음력 생일(월/일/윤달여부).
+ * 주민등록상 양력 생일만 아는 경우, 집에서 챙기는 음력 생신을 역으로 찾아준다.
+ */
+export function solarToLunar(input: SolarInput): SolarToLunarResult {
+  const { year, month, day } = input;
+
+  if (year < 1900 || year > 2100) {
+    return { lunarMonth: 0, lunarDay: 0, isLeapMonth: false, error: '1900년~2100년 사이만 변환할 수 있어요.' };
+  }
+  if (month < 1 || month > 12 || day < 1 || day > 31) {
+    return { lunarMonth: 0, lunarDay: 0, isLeapMonth: false, error: '올바른 양력 날짜를 입력해 주세요.' };
+  }
+
+  try {
+    const cal = new KoreanLunarCalendar();
+    const ok = cal.setSolarDate(year, month, day);
+    if (!ok) {
+      return { lunarMonth: 0, lunarDay: 0, isLeapMonth: false, error: '변환할 수 없는 날짜예요. 날짜를 다시 확인해 주세요.' };
+    }
+    const lunar = cal.getLunarCalendar();
+    return {
+      lunarMonth: lunar.month,
+      lunarDay: lunar.day,
+      isLeapMonth: Boolean(lunar.intercalation),
+    };
+  } catch {
+    return { lunarMonth: 0, lunarDay: 0, isLeapMonth: false, error: '변환 중 문제가 생겼어요. 날짜를 다시 확인해 주세요.' };
+  }
 }
 
 export function formatDDay(dDay: number): string {

@@ -2,15 +2,22 @@
 
 import { useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
-import { convertLunar, formatDDay, formatDate } from '@/lib/lunarConverter';
+import { convertLunar, solarToLunar, formatDDay, formatDate } from '@/lib/lunarConverter';
 import { saveBirthday } from '@/lib/storage';
-import type { LunarInput, ConvertResult, LeapStatus, ShortMonthFallback, LeapFallback, SolarResult } from '@/types/lunar';
+import type { LunarInput, ConvertResult, LeapStatus, ShortMonthFallback, LeapFallback, SolarResult, InputMode } from '@/types/lunar';
 import type { SavedBirthday } from '@/lib/storage';
+
+import MiniCalendar from './MiniCalendar';
 
 const ShareModal = dynamic(() => import('./ShareModal'), { ssr: false });
 
 const MONTHS = Array.from({ length: 12 }, (_, i) => i + 1);
 const DAYS = Array.from({ length: 30 }, (_, i) => i + 1);
+const SOLAR_DAYS = Array.from({ length: 31 }, (_, i) => i + 1);
+
+const CURRENT_YEAR = new Date().getFullYear();
+// 최근 연도부터 보이도록 내림차순 (1900~올해)
+const YEARS = Array.from({ length: CURRENT_YEAR - 1900 + 1 }, (_, i) => CURRENT_YEAR - i);
 
 interface FormState {
   month: string;
@@ -18,6 +25,12 @@ interface FormState {
   leapStatus: LeapStatus;
   shortMonthFallback: ShortMonthFallback;
   leapFallback: LeapFallback;
+}
+
+interface SolarFormState {
+  year: string;
+  month: string;
+  day: string;
 }
 
 interface Props {
@@ -33,6 +46,9 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
     shortMonthFallback: initialItem?.input.shortMonthFallback ?? 'last',
     leapFallback: initialItem?.input.leapFallback ?? 'regular',
   });
+  const [mode, setMode] = useState<InputMode>('lunar');
+  const [solarForm, setSolarForm] = useState<SolarFormState>({ year: '', month: '', day: '' });
+  const [solarError, setSolarError] = useState('');
   const [result, setResult] = useState<ConvertResult | null>(null);
   const [showShare, setShowShare] = useState(false);
   const [showSaveInput, setShowSaveInput] = useState(false);
@@ -54,6 +70,40 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
     };
     setResult(convertLunar(input));
   }, [form]);
+
+  // 양력 생년월일 → 음력 생일을 찾고, 그 음력 생일의 올해/내년 양력 날짜까지 이어서 계산
+  const handleSolarConvert = useCallback(() => {
+    const year = parseInt(solarForm.year);
+    const month = parseInt(solarForm.month);
+    const day = parseInt(solarForm.day);
+    if (!year || !month || !day) return;
+
+    const lunar = solarToLunar({ year, month, day });
+    if (lunar.error) {
+      setSolarError(lunar.error);
+      setResult(null);
+      return;
+    }
+    setSolarError('');
+
+    const leapStatus: LeapStatus = lunar.isLeapMonth ? 'leap' : 'regular';
+    setForm({
+      month: String(lunar.lunarMonth),
+      day: String(lunar.lunarDay),
+      leapStatus,
+      shortMonthFallback: 'last',
+      leapFallback: 'regular',
+    });
+    setResult(
+      convertLunar({
+        month: lunar.lunarMonth,
+        day: lunar.lunarDay,
+        leapStatus,
+        shortMonthFallback: 'last',
+        leapFallback: 'regular',
+      })
+    );
+  }, [solarForm]);
 
   const handleSave = useCallback(() => {
     const month = parseInt(form.month);
@@ -93,6 +143,91 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
         {/* 입력 카드 */}
         <div className="rounded-2xl p-6 mb-4"
           style={{ background: 'var(--bg-card)', boxShadow: 'var(--shadow)', border: '1px solid var(--border-light)' }}>
+
+          {/* 입력 방식 전환 */}
+          <div className="flex gap-2 mb-5 p-1 rounded-xl" style={{ background: 'var(--bg)' }}>
+            {([
+              { value: 'lunar', label: '음력을 알아요' },
+              { value: 'solar', label: '양력만 알아요' },
+            ] as { value: InputMode; label: string }[]).map(opt => (
+              <button key={opt.value} type="button"
+                onClick={() => { setMode(opt.value); setResult(null); setSolarError(''); }}
+                className="flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all"
+                style={{
+                  background: mode === opt.value ? 'var(--bg-card)' : 'transparent',
+                  color: mode === opt.value ? 'var(--accent)' : 'var(--text-muted)',
+                  boxShadow: mode === opt.value ? 'var(--shadow)' : 'none',
+                }}>
+                {opt.label}
+              </button>
+            ))}
+          </div>
+
+          {mode === 'solar' ? (
+            <>
+              <h2 className="text-base font-semibold mb-1.5" style={{ color: 'var(--text-secondary)' }}>
+                양력 생년월일 입력
+              </h2>
+              <p className="text-xs mb-4 leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+                주민등록상 양력 생일을 넣으면 음력 생신이 며칠인지 찾아드려요.
+              </p>
+
+              <div className="flex gap-2 mb-4">
+                <div style={{ flex: '1.3' }}>
+                  <label className="block text-sm mb-1.5" style={{ color: 'var(--text-muted)' }}>태어난 해</label>
+                  <select value={solarForm.year} onChange={e => setSolarForm(f => ({ ...f, year: e.target.value }))}
+                    className="w-full rounded-xl px-3 py-3 text-base"
+                    style={{ background: 'var(--bg)', border: '1.5px solid var(--border)', color: solarForm.year ? 'var(--text-primary)' : 'var(--text-muted)', outline: 'none' }}>
+                    <option value="">년도</option>
+                    {YEARS.map(y => <option key={y} value={y}>{y}년</option>)}
+                  </select>
+                </div>
+                <div className="flex-1">
+                  <label className="block text-sm mb-1.5" style={{ color: 'var(--text-muted)' }}>월</label>
+                  <select value={solarForm.month} onChange={e => setSolarForm(f => ({ ...f, month: e.target.value }))}
+                    className="w-full rounded-xl px-3 py-3 text-base"
+                    style={{ background: 'var(--bg)', border: '1.5px solid var(--border)', color: solarForm.month ? 'var(--text-primary)' : 'var(--text-muted)', outline: 'none' }}>
+                    <option value="">월</option>
+                    {MONTHS.map(m => <option key={m} value={m}>{m}월</option>)}
+                  </select>
+                </div>
+                <div className="flex-1">
+                  <label className="block text-sm mb-1.5" style={{ color: 'var(--text-muted)' }}>일</label>
+                  <select value={solarForm.day} onChange={e => setSolarForm(f => ({ ...f, day: e.target.value }))}
+                    className="w-full rounded-xl px-3 py-3 text-base"
+                    style={{ background: 'var(--bg)', border: '1.5px solid var(--border)', color: solarForm.day ? 'var(--text-primary)' : 'var(--text-muted)', outline: 'none' }}>
+                    <option value="">일</option>
+                    {SOLAR_DAYS.map(d => <option key={d} value={d}>{d}일</option>)}
+                  </select>
+                </div>
+              </div>
+
+              {solarError && (
+                <p className="text-sm mb-3 text-center" style={{ color: 'var(--accent)' }}>{solarError}</p>
+              )}
+
+              {result && !result.error && form.month && (
+                <div className="mb-4 rounded-xl p-4 text-center" style={{ background: 'var(--accent-light)', border: '1px solid var(--border-light)' }}>
+                  <p className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>찾은 음력 생신</p>
+                  <p className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>
+                    음력 {form.leapStatus === 'leap' ? '윤' : ''}{form.month}월 {form.day}일
+                  </p>
+                </div>
+              )}
+
+              <button type="button" onClick={handleSolarConvert}
+                disabled={!solarForm.year || !solarForm.month || !solarForm.day}
+                className="w-full py-4 rounded-xl text-base font-bold transition-all"
+                style={{
+                  background: solarForm.year && solarForm.month && solarForm.day ? 'var(--accent)' : 'var(--border)',
+                  color: solarForm.year && solarForm.month && solarForm.day ? '#fff' : 'var(--text-muted)',
+                  cursor: solarForm.year && solarForm.month && solarForm.day ? 'pointer' : 'not-allowed',
+                }}>
+                음력 생신 찾기
+              </button>
+            </>
+          ) : (
+            <>
           <h2 className="text-base font-semibold mb-5" style={{ color: 'var(--text-secondary)' }}>
             음력 생일 입력
           </h2>
@@ -206,6 +341,8 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
             }}>
             양력으로 변환하기
           </button>
+            </>
+          )}
         </div>
 
         {/* 결과 카드 */}
@@ -218,11 +355,13 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
               <>
                 <div className="flex items-center justify-between mb-5">
                   <h2 className="text-base font-semibold" style={{ color: 'var(--text-secondary)' }}>
-                    음력 {form.month}월 {form.day}일 결과
+                    음력 {form.leapStatus === 'leap' ? '윤' : ''}{form.month}월 {form.day}일 결과
                   </h2>
                   <button type="button" onClick={() => setShowShare(true)}
-                    className="text-xs px-3 py-1.5 rounded-lg font-medium"
-                    style={{ background: 'var(--accent-light)', color: 'var(--accent)', border: '1px solid var(--accent)' }}>
+                    aria-label="결과 공유하기"
+                    className="flex items-center gap-1.5 text-sm px-4 py-2.5 rounded-xl font-bold transition-transform active:scale-95"
+                    style={{ background: '#FFC93C', color: '#4A3200', boxShadow: '0 2px 8px rgba(255, 201, 60, 0.5)' }}>
+                    <span aria-hidden="true" style={{ fontSize: '15px' }}>📤</span>
                     공유하기
                   </button>
                 </div>
@@ -230,6 +369,9 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
                 <ResultBlock label="올해" result={result.thisYear} isNearest={result.nearest === result.thisYear && !result.thisYear?.isPast} />
                 <div className="my-3 h-px" style={{ background: 'var(--border-light)' }} />
                 <ResultBlock label="내년" result={result.nextYear} isNearest={result.nearest === result.nextYear} />
+
+                {/* 다가오는 생신이 있는 달의 달력 */}
+                {result.nearest && <MiniCalendar target={result.nearest} />}
 
                 <div className="mt-4 pt-4" style={{ borderTop: '1px solid var(--border-light)' }}>
                   <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
