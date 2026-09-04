@@ -3,6 +3,7 @@
 import { useRef, useState, useCallback } from 'react';
 import type { ConvertResult } from '@/types/lunar';
 import { formatDate } from '@/lib/lunarConverter';
+import { BASE_URL } from '@/lib/siteConfig';
 
 interface Props {
   result: ConvertResult;
@@ -60,7 +61,7 @@ export default function ShareModal({ result, label, lunarMonth, lunarDay, onClos
     }
     lines.push('');
     lines.push('우리집 생신표에서 확인했어요');
-    lines.push('https://saengsinpyo.com');
+    lines.push(BASE_URL);
     const text = lines.join('\n');
 
     if (navigator.share) {
@@ -86,7 +87,7 @@ export default function ShareModal({ result, label, lunarMonth, lunarDay, onClos
   }, [imageUrl, downloadImage]);
 
   const shareToKakao = useCallback(async () => {
-    const text = `🎂 ${label || `음력 ${lunarMonth}월 ${lunarDay}일 생신`}\n올해: ${thisYear ? formatDate(thisYear) : '확인 불가'}\n\n우리집 생신표 → https://saengsinpyo.com`;
+    const text = `🎂 ${label || `음력 ${lunarMonth}월 ${lunarDay}일 생신`}\n올해: ${thisYear ? formatDate(thisYear) : '확인 불가'}\n\n우리집 생신표 → ${BASE_URL}`;
     if (navigator.share) {
       await navigator.share({ text }).catch(() => {});
     } else {

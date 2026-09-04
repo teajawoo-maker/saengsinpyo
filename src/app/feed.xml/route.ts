@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://saengsinpyo.com';
+import { BASE_URL } from '@/lib/siteConfig';
 
 const GUIDES = [
   {
