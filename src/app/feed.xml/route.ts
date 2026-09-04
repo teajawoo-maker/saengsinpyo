@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://saengsinpyo.vercel.app';
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://saengsinpyo.com';
 
 const GUIDES = [
   {

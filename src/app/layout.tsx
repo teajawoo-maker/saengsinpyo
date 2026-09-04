@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://saengsinpyo.vercel.app';
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://saengsinpyo.com';
 
 export const metadata: Metadata = {
   title: '우리집 생신표 | 음력 생일 양력 변환',
