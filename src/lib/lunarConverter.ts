@@ -177,6 +177,18 @@ export function solarToLunar(input: SolarInput): SolarToLunarResult {
   }
 }
 
+/**
+ * 여러 해에 걸친 양력 생신 날짜.
+ * 음력 생일은 해마다 양력 날짜가 달라 반복 규칙으로 표현할 수 없다.
+ * 캘린더로 내보낼 때 연도별 날짜를 각각 만들어야 해서 필요하다.
+ */
+export function getSolarForYears(input: LunarInput, years: number[]): SolarResult[] {
+  const { month, day, leapStatus, shortMonthFallback, leapFallback } = input;
+  return years
+    .map(y => findSolarInYear(y, month, day, leapStatus, shortMonthFallback, leapFallback))
+    .filter((r): r is SolarResult => r !== null);
+}
+
 export function formatDDay(dDay: number): string {
   if (dDay === 0) return 'D-DAY';
   if (dDay > 0) return `D-${dDay}`;

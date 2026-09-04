@@ -1,10 +1,14 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import { getSaved, deleteBirthday, toggleStar, type SavedBirthday } from '@/lib/storage';
 import { convertLunar, formatDDay } from '@/lib/lunarConverter';
 import { ageAtBirthday, getMilestone } from '@/lib/age';
+import { downloadIcs } from '@/lib/ics';
 import type { SolarResult } from '@/types/lunar';
+
+const FamilyShareModal = dynamic(() => import('./FamilyShareModal'), { ssr: false });
 
 const LEAP_LABEL: Record<string, string> = {
   regular: '평달',
@@ -24,6 +28,7 @@ interface Props {
 
 export default function SavedBirthdays({ onLoad, refreshKey }: Props) {
   const [items, setItems] = useState<SavedBirthday[]>([]);
+  const [showShare, setShowShare] = useState(false);
 
   const reload = useCallback(() => {
     try { setItems(getSaved()); } catch { setItems([]); }
@@ -46,6 +51,7 @@ export default function SavedBirthdays({ onLoad, refreshKey }: Props) {
   if (rows.length === 0) return null;
 
   return (
+    <>
     <div className="w-full max-w-md mx-auto px-4 mb-4">
       <div className="rounded-2xl p-5"
         style={{ background: 'var(--bg-card)', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow)' }}>
@@ -139,7 +145,29 @@ export default function SavedBirthdays({ onLoad, refreshKey }: Props) {
             );
           })}
         </div>
+
+        {/* 가족 단톡방에 뿌리거나 휴대폰 캘린더에 넣기 */}
+        <div className="grid grid-cols-2 gap-2 mt-4 pt-4" style={{ borderTop: '1px solid var(--border-light)' }}>
+          <button type="button" onClick={() => setShowShare(true)}
+            className="py-2.5 rounded-xl text-sm font-bold transition-transform active:scale-95"
+            style={{ background: '#FFC93C', color: '#4A3200' }}>
+            📤 전체 공유
+          </button>
+          <button type="button" onClick={() => downloadIcs(items)}
+            className="py-2.5 rounded-xl text-sm font-medium transition-transform active:scale-95"
+            style={{ background: 'var(--bg)', color: 'var(--text-secondary)', border: '1.5px solid var(--border)' }}>
+            📅 캘린더 저장
+          </button>
+        </div>
+        <p className="text-xs mt-2 text-center" style={{ color: 'var(--text-muted)' }}>
+          캘린더 저장은 앞으로 10년치 생신을 한 번에 넣어요
+        </p>
       </div>
     </div>
+
+    {showShare && (
+      <FamilyShareModal rows={rows} onClose={() => setShowShare(false)} />
+    )}
+    </>
   );
 }

@@ -23,6 +23,8 @@ const YEARS = Array.from({ length: CURRENT_YEAR - 1900 + 1 }, (_, i) => CURRENT_
 interface FormState {
   month: string;
   day: string;
+  /** 태어난 해(선택). 넣으면 나이와 환갑·칠순을 함께 보여준다. */
+  year: string;
   leapStatus: LeapStatus;
   shortMonthFallback: ShortMonthFallback;
   leapFallback: LeapFallback;
@@ -43,6 +45,7 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
   const [form, setForm] = useState<FormState>({
     month: initialItem ? String(initialItem.input.month) : '',
     day: initialItem ? String(initialItem.input.day) : '',
+    year: initialItem?.birthYear ? String(initialItem.birthYear) : '',
     leapStatus: initialItem?.input.leapStatus ?? 'regular',
     shortMonthFallback: initialItem?.input.shortMonthFallback ?? 'last',
     leapFallback: initialItem?.input.leapFallback ?? 'regular',
@@ -75,7 +78,8 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
       shortMonthFallback: form.shortMonthFallback,
       leapFallback: form.leapFallback,
     };
-    setBirthYear(undefined); // 음력 월/일만으로는 나이를 알 수 없다
+    // 태어난 해는 선택 항목이다. 넣었으면 나이 계산에 쓴다.
+    setBirthYear(form.year ? parseInt(form.year) : undefined);
     setResult(convertLunar(input));
   }, [form]);
 
@@ -99,6 +103,7 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
     setForm({
       month: String(lunar.lunarMonth),
       day: String(lunar.lunarDay),
+      year: String(year),
       leapStatus,
       shortMonthFallback: 'last',
       leapFallback: 'regular',
@@ -253,6 +258,19 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
                 {DAYS.map(d => <option key={d} value={d}>{d}일</option>)}
               </select>
             </div>
+          </div>
+
+          {/* 태어난 해 — 선택. 있으면 나이와 환갑·칠순을 알려줄 수 있다 */}
+          <div className="mb-4">
+            <label className="block text-sm mb-1.5" style={{ color: 'var(--text-muted)' }}>
+              태어난 해 <span style={{ opacity: 0.7 }}>(선택 — 넣으면 나이·환갑을 알려드려요)</span>
+            </label>
+            <select value={form.year} onChange={e => setForm(f => ({ ...f, year: e.target.value }))}
+              className="w-full rounded-xl px-4 py-3 text-base"
+              style={{ background: 'var(--bg)', border: '1.5px solid var(--border)', color: form.year ? 'var(--text-primary)' : 'var(--text-muted)', outline: 'none' }}>
+              <option value="">모르거나 건너뛰기</option>
+              {YEARS.map(y => <option key={y} value={y}>{y}년생</option>)}
+            </select>
           </div>
 
           {/* 평달/윤달 */}
