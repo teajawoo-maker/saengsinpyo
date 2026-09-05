@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { SavedBirthday } from '@/lib/storage';
@@ -8,16 +8,19 @@ import type { SavedBirthday } from '@/lib/storage';
 const LunarCalculator = dynamic(() => import('@/components/LunarCalculator'), { ssr: false });
 const SavedBirthdays = dynamic(() => import('@/components/SavedBirthdays'), { ssr: false });
 const SeasonalSection = dynamic(() => import('@/components/SeasonalSection'), { ssr: false });
+const BackupSection = dynamic(() => import('@/components/BackupSection'), { ssr: false });
 
 export default function HomePage() {
   const [savedKey, setSavedKey] = useState(0);
   const [loadedItem, setLoadedItem] = useState<SavedBirthday | null>(null);
+  const [savedCount, setSavedCount] = useState(0);
 
   const handleSaved = () => setSavedKey(k => k + 1);
   const handleLoad = (item: SavedBirthday) => {
     setLoadedItem(item);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+  const handleCountChange = useCallback((n: number) => setSavedCount(n), []);
 
   return (
     <main className="min-h-dvh pb-20" style={{ background: 'var(--bg)' }}>
@@ -48,10 +51,16 @@ export default function HomePage() {
       <SavedBirthdays
         onLoad={handleLoad}
         refreshKey={savedKey}
+        onCountChange={handleCountChange}
       />
 
       {/* 절기 섹션 */}
       <SeasonalSection />
+
+      {/* 백업 — 저장한 생신이 있을 때만 안내한다 */}
+      {savedCount > 0 && (
+        <BackupSection count={savedCount} onImported={handleSaved} />
+      )}
 
       {/* 안내 섹션 */}
       <section className="max-w-md mx-auto px-4 pb-6">

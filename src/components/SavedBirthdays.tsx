@@ -24,9 +24,11 @@ interface Row {
 interface Props {
   onLoad: (item: SavedBirthday) => void;
   refreshKey: number;
+  /** 백업 섹션에 개수를 넘기기 위해 목록이 바뀔 때 알려준다 */
+  onCountChange?: (count: number) => void;
 }
 
-export default function SavedBirthdays({ onLoad, refreshKey }: Props) {
+export default function SavedBirthdays({ onLoad, refreshKey, onCountChange }: Props) {
   const [items, setItems] = useState<SavedBirthday[]>([]);
   const [showShare, setShowShare] = useState(false);
 
@@ -35,6 +37,7 @@ export default function SavedBirthdays({ onLoad, refreshKey }: Props) {
   }, []);
 
   useEffect(() => { reload(); }, [reload, refreshKey]);
+  useEffect(() => { onCountChange?.(items.length); }, [items.length, onCountChange]);
 
   // 생신표의 핵심은 "누가 제일 먼저인가"다. 다가오는 순으로 정렬한다.
   // 날짜를 계산할 수 없는 항목은 맨 뒤로 보낸다.
@@ -71,15 +74,22 @@ export default function SavedBirthdays({ onLoad, refreshKey }: Props) {
               : null;
             const milestone = age !== null ? getMilestone(age) : null;
             const isSoon = nearest !== null && nearest.dDay >= 0 && nearest.dDay <= 30;
+            const isToday = nearest?.isToday ?? false;
 
             return (
               <div key={item.id}
                 className="rounded-xl p-3 cursor-pointer transition-all"
                 style={{
-                  background: milestone ? 'var(--accent-light)' : 'var(--bg)',
-                  border: `1px solid ${milestone ? 'var(--accent)' : 'var(--border-light)'}`,
+                  background: isToday || milestone ? 'var(--accent-light)' : 'var(--bg)',
+                  border: `${isToday ? '2px' : '1px'} solid ${isToday || milestone ? 'var(--accent)' : 'var(--border-light)'}`,
                 }}
                 onClick={() => onLoad(item)}>
+
+                {isToday && (
+                  <p className="text-sm font-bold mb-2 text-center" style={{ color: 'var(--accent)' }}>
+                    🎉 오늘이 {item.label} 생신이에요!
+                  </p>
+                )}
 
                 <div className="flex items-center gap-3">
                   <button type="button"

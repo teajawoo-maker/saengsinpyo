@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { BASE_URL, NAVER_SITE_VERIFICATION } from '@/lib/siteConfig';
 
@@ -44,6 +44,22 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true },
   },
+  manifest: '/manifest.webmanifest',
+  appleWebApp: {
+    capable: true,
+    title: '생신표',
+    statusBarStyle: 'black-translucent',
+  },
+  icons: {
+    icon: '/icon-192.png',
+    apple: '/icon-192.png',
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#E8802B',
+  width: 'device-width',
+  initialScale: 1,
 };
 
 const jsonLd = {
@@ -67,7 +83,6 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
         {/* 네이버 서치어드바이저 소유확인 */}
         <meta name="naver-site-verification" content={NAVER_SITE_VERIFICATION} />
         <link rel="alternate" type="application/rss+xml" title="우리집 생신표 RSS" href={`${BASE_URL}/feed.xml`} />
