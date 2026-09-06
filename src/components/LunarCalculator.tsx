@@ -221,16 +221,23 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
                 </div>
               )}
 
-              <button type="button" onClick={handleSolarConvert}
-                disabled={!solarForm.year || !solarForm.month || !solarForm.day}
-                className="w-full py-4 rounded-xl text-base font-bold transition-all"
-                style={{
-                  background: solarForm.year && solarForm.month && solarForm.day ? 'var(--accent)' : 'var(--border)',
-                  color: solarForm.year && solarForm.month && solarForm.day ? '#fff' : 'var(--text-muted)',
-                  cursor: solarForm.year && solarForm.month && solarForm.day ? 'pointer' : 'not-allowed',
-                }}>
-                음력 생신 찾기
-              </button>
+              {(() => {
+                const ready = Boolean(solarForm.year && solarForm.month && solarForm.day);
+                return (
+                  <button type="button" onClick={handleSolarConvert} disabled={!ready}
+                    className="w-full py-4 rounded-2xl text-base font-bold transition-transform active:scale-[0.98]"
+                    style={{
+                      background: ready
+                        ? 'linear-gradient(135deg, var(--accent-bright) 0%, var(--accent) 100%)'
+                        : 'var(--border-light)',
+                      color: ready ? '#fff' : 'var(--text-muted)',
+                      boxShadow: ready ? 'var(--shadow-accent)' : 'none',
+                      cursor: ready ? 'pointer' : 'not-allowed',
+                    }}>
+                    음력 생신 찾기
+                  </button>
+                );
+              })()}
             </>
           ) : (
             <>
@@ -351,15 +358,23 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
           )}
 
           {/* 계산 버튼 */}
-          <button type="button" onClick={handleCalculate} disabled={!form.month || !form.day}
-            className="w-full py-4 rounded-xl text-base font-bold transition-all"
-            style={{
-              background: form.month && form.day ? 'var(--accent)' : 'var(--border)',
-              color: form.month && form.day ? '#fff' : 'var(--text-muted)',
-              cursor: form.month && form.day ? 'pointer' : 'not-allowed',
-            }}>
-            양력으로 변환하기
-          </button>
+          {(() => {
+            const ready = Boolean(form.month && form.day);
+            return (
+              <button type="button" onClick={handleCalculate} disabled={!ready}
+                className="w-full py-4 rounded-2xl text-base font-bold transition-transform active:scale-[0.98]"
+                style={{
+                  background: ready
+                    ? 'linear-gradient(135deg, var(--accent-bright) 0%, var(--accent) 100%)'
+                    : 'var(--border-light)',
+                  color: ready ? '#fff' : 'var(--text-muted)',
+                  boxShadow: ready ? 'var(--shadow-accent)' : 'none',
+                  cursor: ready ? 'pointer' : 'not-allowed',
+                }}>
+                양력으로 변환하기
+              </button>
+            );
+          })()}
             </>
           )}
         </div>
@@ -404,10 +419,14 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
                         </span>
                       </div>
                       {milestone && (
-                        <div className="mt-3 rounded-xl p-3 text-center"
-                          style={{ background: 'var(--accent)', color: '#fff' }}>
-                          <p className="text-base font-bold">🎉 {milestone.name} 생신이에요</p>
-                          <p className="text-xs mt-1 opacity-90">{milestone.description}</p>
+                        <div className="mt-3 rounded-2xl p-3.5 text-center"
+                          style={{
+                            background: 'linear-gradient(135deg, #ffd968 0%, var(--gold) 100%)',
+                            color: 'var(--gold-deep)',
+                            boxShadow: '0 4px 14px rgba(255, 201, 60, 0.4)',
+                          }}>
+                          <p className="text-base font-black">🎉 {milestone.name} 생신이에요</p>
+                          <p className="text-xs mt-1" style={{ opacity: 0.75 }}>{milestone.description}</p>
                         </div>
                       )}
                     </div>

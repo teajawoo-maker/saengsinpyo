@@ -25,19 +25,33 @@ export default function HomePage() {
   return (
     <main className="min-h-dvh pb-20" style={{ background: 'var(--bg)' }}>
       {/* 헤더 */}
-      <header className="pt-10 pb-6 px-4 text-center">
-        <div className="inline-flex items-center gap-2 mb-3">
-          <span className="text-3xl" role="img" aria-label="생신">🎂</span>
-          <h1 className="text-2xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>
+      <header className="relative pt-11 pb-8 px-4 text-center overflow-hidden">
+        {/* 위쪽에 은은한 색을 깔아 밋밋함을 덜어낸다 */}
+        <div aria-hidden="true" className="absolute inset-x-0 top-0 h-56 pointer-events-none"
+          style={{ background: 'linear-gradient(180deg, var(--bg-soft) 0%, rgba(255,242,228,0) 100%)' }} />
+
+        <div className="relative">
+          <div className="inline-flex items-center justify-center mb-4 rounded-full"
+            style={{
+              width: 68, height: 68,
+              background: 'linear-gradient(145deg, #ffc46b 0%, var(--accent) 100%)',
+              boxShadow: 'var(--shadow-accent)',
+            }}>
+            <span className="text-3xl" role="img" aria-label="생신">🎂</span>
+          </div>
+
+          <h1 className="text-[28px] font-black tracking-tight leading-tight" style={{ color: 'var(--text-primary)' }}>
             우리집 생신표
           </h1>
+          <p className="text-base mt-2 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+            음력 생일을 양력으로 바꿔드려요
+          </p>
+
+          <div className="inline-flex items-center gap-1.5 mt-3 px-3.5 py-1.5 rounded-full text-xs font-medium"
+            style={{ background: 'var(--bg-card)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }}>
+            회원가입 없이 · 무료로 · 바로 확인
+          </div>
         </div>
-        <p className="text-base leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-          음력 생일을 양력으로 바꿔드려요
-        </p>
-        <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
-          회원가입 없이 · 무료로 · 바로 확인
-        </p>
       </header>
 
       {/* 계산기 — 저장된 생신을 누르면 key가 바뀌며 그 값으로 새로 마운트된다 */}

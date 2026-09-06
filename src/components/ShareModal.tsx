@@ -29,7 +29,7 @@ export default function ShareModal({ result, label, lunarMonth, lunarDay, onClos
       const html2canvas = (await import('html2canvas')).default;
       const canvas = await html2canvas(cardRef.current, {
         scale: 2,
-        backgroundColor: '#1a1714',
+        backgroundColor: '#fff4e6',
         useCORS: true,
         logging: false,
       });
@@ -116,30 +116,30 @@ export default function ShareModal({ result, label, lunarMonth, lunarDay, onClos
           ref={cardRef}
           className="rounded-2xl p-5 mb-5 mx-auto"
           style={{
-            background: 'linear-gradient(135deg, #2a1f1c 0%, #1a1714 100%)',
-            border: '1px solid #3a2f2a',
+            background: 'linear-gradient(150deg, #fff9ef 0%, #ffeed9 100%)',
+            border: '1px solid #f3e3d1',
             maxWidth: '320px',
           }}
         >
           <div className="flex items-center gap-2 mb-4">
             <span style={{ fontSize: '24px' }}>🎂</span>
             <div>
-              <p className="text-xs font-semibold" style={{ color: '#a89e95' }}>우리집 생신표</p>
-              {label && <p className="text-sm font-bold" style={{ color: '#f0ebe5' }}>{label}</p>}
+              <p className="text-xs font-semibold" style={{ color: '#9a806a' }}>우리집 생신표</p>
+              {label && <p className="text-sm font-bold" style={{ color: '#2e2119' }}>{label}</p>}
             </div>
           </div>
 
-          <p className="text-xs mb-3" style={{ color: '#6b6258' }}>
+          <p className="text-xs mb-3" style={{ color: '#9a806a' }}>
             음력 {lunarMonth}월 {lunarDay}일
           </p>
 
           {thisYear && (
-            <div className="mb-3 rounded-xl p-3" style={{ background: 'rgba(192,57,43,0.15)', border: '1px solid rgba(192,57,43,0.3)' }}>
-              <p className="text-xs mb-1" style={{ color: '#a89e95' }}>올해 {thisYear.year}년</p>
-              <p className="text-xl font-black" style={{ color: '#f0ebe5' }}>
+            <div className="mb-3 rounded-xl p-3" style={{ background: '#ffffff', border: '1px solid #f5d9b8' }}>
+              <p className="text-xs mb-1" style={{ color: '#9a806a' }}>올해 {thisYear.year}년</p>
+              <p className="text-xl font-black" style={{ color: '#2e2119' }}>
                 {thisYear.month}월 {thisYear.day}일 {thisYear.dayOfWeek}요일
               </p>
-              <p className="text-sm font-bold mt-1" style={{ color: '#e05a4e' }}>
+              <p className="text-sm font-bold mt-1" style={{ color: '#c94a0d' }}>
                 {thisYear.isPast ? '지났어요' : thisYear.isToday ? 'D-DAY 🎉' : `D-${thisYear.dDay}`}
               </p>
             </div>
@@ -147,14 +147,14 @@ export default function ShareModal({ result, label, lunarMonth, lunarDay, onClos
 
           {nextYear && (
             <div>
-              <p className="text-xs mb-1" style={{ color: '#6b6258' }}>내년 {nextYear.year}년</p>
-              <p className="text-sm" style={{ color: '#a89e95' }}>
+              <p className="text-xs mb-1" style={{ color: '#9a806a' }}>내년 {nextYear.year}년</p>
+              <p className="text-sm" style={{ color: '#7c6553' }}>
                 {nextYear.month}월 {nextYear.day}일 {nextYear.dayOfWeek}요일
               </p>
             </div>
           )}
 
-          <p className="text-xs mt-4" style={{ color: '#3a2f2a', borderTop: '1px solid #2a2520', paddingTop: '8px' }}>
+          <p className="text-xs mt-4" style={{ color: '#b09a84', borderTop: '1px solid #f3e3d1', paddingTop: '8px' }}>
             saengsinpyo.com · KASI 데이터 기반
           </p>
         </div>

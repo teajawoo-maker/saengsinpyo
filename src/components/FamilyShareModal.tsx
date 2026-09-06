@@ -33,7 +33,7 @@ export default function FamilyShareModal({ rows, onClose }: Props) {
     if (!cardRef.current) return null;
     const html2canvas = (await import('html2canvas')).default;
     const canvas = await html2canvas(cardRef.current, {
-      backgroundColor: '#1a1714',
+      backgroundColor: '#fff4e6',
       scale: 2,
       logging: false,
     });
@@ -116,11 +116,11 @@ export default function FamilyShareModal({ rows, onClose }: Props) {
 
         {/* 이미지로 만들 카드 */}
         <div ref={cardRef} className="rounded-2xl p-5 mb-5"
-          style={{ background: 'linear-gradient(135deg, #2a1f1c 0%, #1a1714 100%)' }}>
-          <p className="text-center text-lg font-black mb-1" style={{ color: '#fff' }}>
+          style={{ background: 'linear-gradient(150deg, #fff9ef 0%, #ffeed9 100%)' }}>
+          <p className="text-center text-lg font-black mb-1" style={{ color: '#2e2119' }}>
             🎂 우리집 생신표
           </p>
-          <p className="text-center text-xs mb-4" style={{ color: '#9c8878' }}>
+          <p className="text-center text-xs mb-4" style={{ color: '#9a806a' }}>
             다가오는 순 · {visible.length}명
           </p>
 
@@ -131,28 +131,31 @@ export default function FamilyShareModal({ rows, onClose }: Props) {
               const milestone = age !== null ? getMilestone(age) : null;
               return (
                 <div key={item.id} className="flex items-center justify-between gap-3 rounded-xl px-3 py-2.5"
-                  style={{ background: milestone ? 'rgba(232,128,43,0.22)' : 'rgba(255,255,255,0.05)' }}>
+                  style={{
+                    background: milestone ? '#fff2cc' : '#ffffff',
+                    border: `1px solid ${milestone ? '#f5d98a' : '#f3e3d1'}`,
+                  }}>
                   <div className="min-w-0">
                     <div className="flex items-baseline gap-1.5">
-                      <span className="text-sm font-bold" style={{ color: '#fff' }}>{item.label}</span>
+                      <span className="text-sm font-bold" style={{ color: '#2e2119' }}>{item.label}</span>
                       {age !== null && (
-                        <span className="text-xs" style={{ color: '#9c8878' }}>만 {age}세</span>
+                        <span className="text-xs" style={{ color: '#9a806a' }}>만 {age}세</span>
                       )}
                       {milestone && (
-                        <span className="text-xs font-bold" style={{ color: '#FFC93C' }}>
+                        <span className="text-xs font-black" style={{ color: '#a06a00' }}>
                           {milestone.name}
                         </span>
                       )}
                     </div>
-                    <p className="text-xs mt-0.5" style={{ color: '#9c8878' }}>
+                    <p className="text-xs mt-0.5" style={{ color: '#9a806a' }}>
                       음력 {item.input.leapStatus === 'leap' ? '윤' : ''}{item.input.month}월 {item.input.day}일
                     </p>
                   </div>
                   <div className="text-right shrink-0">
-                    <p className="text-sm font-black" style={{ color: '#FFC93C' }}>
+                    <p className="text-sm font-black" style={{ color: '#c94a0d' }}>
                       {formatDDay(solar.dDay)}
                     </p>
-                    <p className="text-xs" style={{ color: '#9c8878' }}>
+                    <p className="text-xs" style={{ color: '#9a806a' }}>
                       {solar.month}/{solar.day} {solar.dayOfWeek}{WEEKDAY_SUFFIX}
                     </p>
                   </div>
@@ -161,7 +164,7 @@ export default function FamilyShareModal({ rows, onClose }: Props) {
             })}
           </div>
 
-          <p className="text-center text-xs mt-4" style={{ color: '#6b5b4d' }}>
+          <p className="text-center text-xs mt-4" style={{ color: '#b09a84' }}>
             saengsinpyo.com · KASI 데이터 기반
           </p>
         </div>

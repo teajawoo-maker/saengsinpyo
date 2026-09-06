@@ -12,8 +12,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: '음력 생일을 양력으로 변환해 드려요. 부모님·조부모님 생신을 올해·내년 날짜로 바로 확인하세요.',
     start_url: '/',
     display: 'standalone',
-    background_color: '#1a1714',
-    theme_color: '#E8802B',
+    background_color: '#fff8f0',
+    theme_color: '#ef6c2f',
     lang: 'ko',
     categories: ['utilities', 'lifestyle'],
     icons: [
