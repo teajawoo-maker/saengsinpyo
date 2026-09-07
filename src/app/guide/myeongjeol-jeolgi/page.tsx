@@ -12,12 +12,18 @@ export const metadata: Metadata = {
 };
 
 /**
- * 표에 쓸 연도. 빌드 시점 기준 올해와 내년을 보여준다.
- * 정적 페이지라 해가 바뀌면 다시 배포해야 값이 갱신된다.
+ * 하루에 한 번 페이지를 다시 만든다.
+ *
+ * 이 글은 올해가 몇 년인지에 따라 내용이 달라진다. 한 번 만들고 두면
+ * 해가 바뀌어도 지난해 표가 그대로 남는다. 다시 배포하지 않아도
+ * 알아서 갱신되도록 재생성 주기를 둔다.
  */
-const THIS_YEAR = new Date().getFullYear();
+export const revalidate = 86400;
 
 export default function MyeongjeolPage() {
+  // 연도는 페이지를 만드는 시점에 구한다. 모듈 바깥에 두면 서버가
+  // 한 번 켜질 때의 값이 그대로 굳어 재생성해도 바뀌지 않는다.
+  const THIS_YEAR = new Date().getFullYear();
   const thisYear = getSeasonalDaysForYear(THIS_YEAR);
   const nextYear = getSeasonalDaysForYear(THIS_YEAR + 1);
   const nextByName = new Map(nextYear.map(d => [d.name, d]));

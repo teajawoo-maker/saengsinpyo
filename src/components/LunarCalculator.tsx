@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { convertLunar, solarToLunar, formatDDay, lunarBirthToSolarYear } from '@/lib/lunarConverter';
 import { ageAtBirthday, getMilestone } from '@/lib/age';
@@ -17,9 +17,17 @@ const MONTHS = Array.from({ length: 12 }, (_, i) => i + 1);
 const DAYS = Array.from({ length: 30 }, (_, i) => i + 1);
 const SOLAR_DAYS = Array.from({ length: 31 }, (_, i) => i + 1);
 
-const CURRENT_YEAR = new Date().getFullYear();
-// 최근 연도부터 보이도록 내림차순 (1900~올해)
-const YEARS = Array.from({ length: CURRENT_YEAR - 1900 + 1 }, (_, i) => CURRENT_YEAR - i);
+/**
+ * 태어난 해 목록. 최근 연도부터 보이도록 내림차순으로 1900년까지.
+ *
+ * 모듈 바깥에서 한 번만 구하면, 서버가 화면을 만든 시점의 연도가 굳어
+ * 브라우저가 계산한 값과 어긋난다. 그릴 때마다 구한다.
+ * 페이지에 재생성 주기를 걸어 두어 해가 바뀌어도 따라간다.
+ */
+function buildYearOptions(): number[] {
+  const current = new Date().getFullYear();
+  return Array.from({ length: current - 1900 + 1 }, (_, i) => current - i);
+}
 
 interface FormState {
   month: string;
@@ -71,6 +79,8 @@ export default function LunarCalculator({ initialItem }: Props) {
   const [saveLabel, setSaveLabel] = useState(initialItem?.label ?? '');
   const [savedMsg, setSavedMsg] = useState('');
   const [saveFailed, setSaveFailed] = useState(false);
+
+  const YEARS = useMemo(() => buildYearOptions(), []);
 
   const showLeapOptions = form.leapStatus === 'leap';
   const showShortMonthOptions = form.day === '30';

@@ -11,11 +11,18 @@ export const metadata: Metadata = {
   alternates: { canonical: '/guide/tti-ganji' },
 };
 
-/** 최근 12년치 띠 표. 열두 띠가 한 바퀴 도는 주기라 12개면 충분하다. */
-const THIS_YEAR = 2026;
-const RECENT = Array.from({ length: 12 }, (_, i) => THIS_YEAR - i);
+/**
+ * 하루에 한 번 페이지를 다시 만든다.
+ * 연도별 띠 표가 올해를 기준으로 하므로, 해가 바뀌면 표도 따라가야 한다.
+ */
+export const revalidate = 86400;
 
 export default function TtiGanjiPage() {
+  // 연도를 숫자로 박아 두면 해가 바뀌어도 아무도 모르게 낡는다.
+  // 페이지를 만드는 시점의 올해부터 12년치를 보여준다.
+  const THIS_YEAR = new Date().getFullYear();
+  const RECENT = Array.from({ length: 12 }, (_, i) => THIS_YEAR - i);
+
   return (
     <main className="pb-24" style={{ background: 'var(--bg)', minHeight: '100dvh' }}>
       <article className="max-w-md mx-auto px-4 py-10">
