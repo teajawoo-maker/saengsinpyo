@@ -70,6 +70,7 @@ export default function LunarCalculator({ initialItem }: Props) {
   const [showSaveInput, setShowSaveInput] = useState(false);
   const [saveLabel, setSaveLabel] = useState(initialItem?.label ?? '');
   const [savedMsg, setSavedMsg] = useState('');
+  const [saveFailed, setSaveFailed] = useState(false);
 
   const showLeapOptions = form.leapStatus === 'leap';
   const showShortMonthOptions = form.day === '30';
@@ -148,11 +149,18 @@ export default function LunarCalculator({ initialItem }: Props) {
       shortMonthFallback: form.shortMonthFallback,
       leapFallback: form.leapFallback,
     };
-    saveBirthday(label, input, birthYear, birthLunarYear);
-    setSavedMsg(`'${label}' 저장됐어요!`);
-    setShowSaveInput(false);
-    setTimeout(() => setSavedMsg(''), 3000);
-
+    const saved = saveBirthday(label, input, birthYear, birthLunarYear);
+    if (saved) {
+      setSaveFailed(false);
+      setSavedMsg(`'${label}' 저장됐어요!`);
+      setShowSaveInput(false);
+      setTimeout(() => setSavedMsg(''), 3000);
+    } else {
+      // 저장이 안 됐는데 됐다고 알리면 안 된다. 입력창은 열어 두어 다시 시도할 수 있게 한다.
+      setSaveFailed(true);
+      setSavedMsg('저장하지 못했어요. 시크릿 모드이거나 저장 공간이 부족한지 확인해 주세요.');
+      setTimeout(() => { setSavedMsg(''); setSaveFailed(false); }, 6000);
+    }
   }, [form, saveLabel, birthYear, birthLunarYear]);
 
 
@@ -472,7 +480,10 @@ export default function LunarCalculator({ initialItem }: Props) {
                 {/* 저장 영역 */}
                 <div className="mt-3">
                   {savedMsg ? (
-                    <p className="text-sm text-center font-medium py-2" style={{ color: 'var(--accent)' }}>{savedMsg}</p>
+                    <p role="status" className="text-sm text-center font-medium py-2 leading-relaxed"
+                      style={{ color: saveFailed ? 'var(--accent-strong)' : 'var(--accent)' }}>
+                      {savedMsg}
+                    </p>
                   ) : showSaveInput ? (
                     <div className="flex gap-2">
                       <input

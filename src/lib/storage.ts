@@ -66,12 +66,24 @@ export function getServerSnapshot(): string {
   return '[]';
 }
 
-function saveAll(items: SavedBirthday[]): void {
+/**
+ * 실제로 저장됐는지 알려준다.
+ *
+ * 시크릿 모드나 저장공간이 찬 경우 localStorage.setItem이 예외를 던진다.
+ * 예전에는 이걸 조용히 삼켜서, 저장이 안 됐는데도 화면에는
+ * "저장됐어요"라고 나왔다. 생신을 기억해 주는 게 이 서비스의 본질이라
+ * 저장 실패를 사용자가 알아야 한다.
+ */
+function saveAll(items: SavedBirthday[]): boolean {
+  let ok = true;
   try {
     localStorage.setItem(KEY, JSON.stringify(items));
-  } catch { /* 저장공간 부족 등 */ }
-  // 저장에 실패했더라도 화면은 실제 저장소 상태를 다시 읽어야 한다
+  } catch {
+    ok = false;
+  }
+  // 실패했더라도 화면은 실제 저장소 상태를 다시 읽어야 한다
   for (const listener of listeners) listener();
+  return ok;
 }
 
 /**
@@ -83,19 +95,19 @@ export function getSaved(): SavedBirthday[] {
   return loadAll().sort((a, b) => b.savedAt - a.savedAt);
 }
 
+/** 저장에 실패하면 null을 준다. 화면에서 성공했다고 알리면 안 된다. */
 export function saveBirthday(
   label: string,
   input: LunarInput,
   birthYear?: number,
   birthLunarYear?: number
-): SavedBirthday {
+): SavedBirthday | null {
   const items = loadAll();
   const id = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
   const item: SavedBirthday = {
     id, label, input, birthYear, birthLunarYear, savedAt: Date.now(), starred: false,
   };
-  saveAll([...items, item]);
-  return item;
+  return saveAll([...items, item]) ? item : null;
 }
 
 export function deleteBirthday(id: string): void {
@@ -202,6 +214,8 @@ export function importBackup(json: string): ImportResult {
     added += 1;
   }
 
-  saveAll(merged);
+  if (!saveAll(merged)) {
+    return { added: 0, skipped: 0, error: '저장 공간이 부족하거나 브라우저가 저장을 막고 있어요. 시크릿 모드가 아닌지 확인해 주세요.' };
+  }
   return { added, skipped };
 }
