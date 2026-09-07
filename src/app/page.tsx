@@ -7,10 +7,25 @@ import { subscribe, getRawSnapshot, getServerSnapshot, type SavedBirthday } from
 import { AD_SLOTS } from '@/lib/adsense';
 import AdSlot from '@/components/AdSlot';
 
-const LunarCalculator = dynamic(() => import('@/components/LunarCalculator'), { ssr: false });
-const SavedBirthdays = dynamic(() => import('@/components/SavedBirthdays'), { ssr: false });
+/*
+  계산기는 첫 화면의 본문이자 LCP 요소다. ssr:false로 두면 서버가 보내는
+  HTML에 아예 들어가지 않아, 화면이 늦게 그려지고 나중에 끼어들면서
+  아래 내용을 밀어낸다. 실제로 LCP 5.3초, CLS 0.58이 나왔다.
+  브라우저 API를 처음 그릴 때 쓰지 않으므로 서버에서 함께 그린다.
+
+  저장 목록과 백업도 서버에서 그린다. 저장소를 useSyncExternalStore로
+  읽으면서 서버용 스냅샷(빈 목록)이 생겨 안전해졌다.
+*/
+import LunarCalculator from '@/components/LunarCalculator';
+import SavedBirthdays from '@/components/SavedBirthdays';
+import BackupSection from '@/components/BackupSection';
+
+/*
+  절기 섹션만 클라이언트 전용으로 남긴다. 오늘 날짜에 따라 내용이 달라져
+  미리 그려두면 시간이 지났을 때 어긋난다. 대신 자리를 미리 잡아
+  나중에 나타나도 화면이 밀리지 않게 한다.
+*/
 const SeasonalSection = dynamic(() => import('@/components/SeasonalSection'), { ssr: false });
-const BackupSection = dynamic(() => import('@/components/BackupSection'), { ssr: false });
 
 export default function HomePage() {
   const [loadedItem, setLoadedItem] = useState<SavedBirthday | null>(null);
@@ -73,8 +88,10 @@ export default function HomePage() {
       {/* 저장된 생신 목록 */}
       <SavedBirthdays onLoad={handleLoad} />
 
-      {/* 절기 섹션 */}
-      <SeasonalSection />
+      {/* 절기 섹션 — 나타날 자리를 미리 잡아 화면이 밀리지 않게 한다 */}
+      <div className="w-full max-w-md mx-auto px-4" style={{ minHeight: 268 }}>
+        <SeasonalSection />
+      </div>
 
       {/* 백업 — 저장한 생신이 있을 때만 안내한다 */}
       {savedCount > 0 && <BackupSection count={savedCount} />}

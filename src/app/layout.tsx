@@ -96,11 +96,16 @@ export default function RootLayout({
           async라 첫 화면 그리는 것을 막지는 않는다.
         */}
         {isAdsenseEnabled && (
-          <script
-            async
-            crossOrigin="anonymous"
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
-          />
+          <>
+            {/* 광고 서버와 미리 연결해 두면 스크립트를 받는 시간이 줄어든다 */}
+            <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
+            <link rel="preconnect" href="https://googleads.g.doubleclick.net" crossOrigin="anonymous" />
+            <script
+              async
+              crossOrigin="anonymous"
+              src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+            />
+          </>
         )}
         <link rel="alternate" type="application/rss+xml" title="우리집 생신표 RSS" href={`${BASE_URL}/feed.xml`} />
         <script
