@@ -11,8 +11,12 @@
  * NEXT_PUBLIC_ADSENSE_CLIENT가 없으면 스크립트도 광고 자리도 만들지 않는다.
  */
 
-/** 예: ca-pub-1234567890123456 */
-export const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT ?? '';
+/**
+ * 게시자 ID.
+ * 어차피 스크립트 주소에 그대로 실려 나가는 공개 값이라 코드에 둔다.
+ */
+export const ADSENSE_CLIENT =
+  process.env.NEXT_PUBLIC_ADSENSE_CLIENT ?? 'ca-pub-2389705168121700';
 
 export const isAdsenseEnabled = ADSENSE_CLIENT.length > 0;
 
