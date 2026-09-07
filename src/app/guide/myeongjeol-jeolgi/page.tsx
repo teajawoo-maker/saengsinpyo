@@ -42,7 +42,7 @@ export default function MyeongjeolPage() {
 
         <div className="space-y-6">
           <Section title={`${THIS_YEAR}년과 ${THIS_YEAR + 1}년 날짜`}>
-            <div className="overflow-x-auto -mx-1">
+            <div className="overflow-x-auto -mx-1" tabIndex={0} role="region" aria-label="명절·절기 날짜 표">
               <table className="w-full text-sm" style={{ borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ borderBottom: '1.5px solid var(--border)' }}>

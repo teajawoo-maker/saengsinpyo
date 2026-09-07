@@ -38,7 +38,7 @@ export default function MiniCalendar({ target }: Props) {
       <div className="grid grid-cols-7 gap-1">
         {WEEKDAYS.map((w, i) => (
           <div key={w} className="text-center text-xs font-medium py-1"
-            style={{ color: i === 0 ? '#D94F4F' : i === 6 ? '#4F7FD9' : 'var(--text-muted)' }}>
+            style={{ color: i === 0 ? '#c03636' : i === 6 ? '#3f6cc4' : 'var(--text-muted)' }}>
             {w}
           </div>
         ))}
@@ -59,9 +59,10 @@ export default function MiniCalendar({ target }: Props) {
                 background: isBirthday ? 'var(--accent)' : isToday ? 'var(--accent-light)' : 'transparent',
                 color: isBirthday
                   ? '#fff'
+                  // 오늘 칸은 연한 강조 배경 위라 한 단계 진한 색을 쓴다
                   : isToday
-                    ? 'var(--accent)'
-                    : dow === 0 ? '#D94F4F' : dow === 6 ? '#4F7FD9' : 'var(--text-primary)',
+                    ? 'var(--accent-strong)'
+                    : dow === 0 ? '#c03636' : dow === 6 ? '#3f6cc4' : 'var(--text-primary)',
                 border: isToday && !isBirthday ? '1.5px solid var(--accent)' : '1.5px solid transparent',
               }}>
               {d}

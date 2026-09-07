@@ -193,8 +193,8 @@ export default function LunarCalculator({ initialItem }: Props) {
 
               <div className="flex gap-2 mb-4">
                 <div style={{ flex: '1.3' }}>
-                  <label className="block text-sm mb-1.5" style={{ color: 'var(--text-muted)' }}>태어난 해</label>
-                  <select value={solarForm.year} onChange={e => setSolarForm(f => ({ ...f, year: e.target.value }))}
+                  <label htmlFor="solar-year" className="block text-sm mb-1.5" style={{ color: 'var(--text-muted)' }}>태어난 해</label>
+                  <select id="solar-year" value={solarForm.year} onChange={e => setSolarForm(f => ({ ...f, year: e.target.value }))}
                     className="w-full rounded-xl px-3 py-3 text-base"
                     style={{ background: 'var(--bg)', border: '1.5px solid var(--border)', color: solarForm.year ? 'var(--text-primary)' : 'var(--text-muted)', outline: 'none' }}>
                     <option value="">년도</option>
@@ -202,8 +202,8 @@ export default function LunarCalculator({ initialItem }: Props) {
                   </select>
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm mb-1.5" style={{ color: 'var(--text-muted)' }}>월</label>
-                  <select value={solarForm.month} onChange={e => setSolarForm(f => ({ ...f, month: e.target.value }))}
+                  <label htmlFor="solar-month" className="block text-sm mb-1.5" style={{ color: 'var(--text-muted)' }}>월</label>
+                  <select id="solar-month" value={solarForm.month} onChange={e => setSolarForm(f => ({ ...f, month: e.target.value }))}
                     className="w-full rounded-xl px-3 py-3 text-base"
                     style={{ background: 'var(--bg)', border: '1.5px solid var(--border)', color: solarForm.month ? 'var(--text-primary)' : 'var(--text-muted)', outline: 'none' }}>
                     <option value="">월</option>
@@ -211,8 +211,8 @@ export default function LunarCalculator({ initialItem }: Props) {
                   </select>
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm mb-1.5" style={{ color: 'var(--text-muted)' }}>일</label>
-                  <select value={solarForm.day} onChange={e => setSolarForm(f => ({ ...f, day: e.target.value }))}
+                  <label htmlFor="solar-day" className="block text-sm mb-1.5" style={{ color: 'var(--text-muted)' }}>일</label>
+                  <select id="solar-day" value={solarForm.day} onChange={e => setSolarForm(f => ({ ...f, day: e.target.value }))}
                     className="w-full rounded-xl px-3 py-3 text-base"
                     style={{ background: 'var(--bg)', border: '1.5px solid var(--border)', color: solarForm.day ? 'var(--text-primary)' : 'var(--text-muted)', outline: 'none' }}>
                     <option value="">일</option>
@@ -261,8 +261,8 @@ export default function LunarCalculator({ initialItem }: Props) {
           {/* 월/일 */}
           <div className="flex gap-3 mb-4">
             <div className="flex-1">
-              <label className="block text-sm mb-1.5" style={{ color: 'var(--text-muted)' }}>음력 월</label>
-              <select value={form.month} onChange={e => setForm(f => ({ ...f, month: e.target.value }))}
+              <label htmlFor="lunar-month" className="block text-sm mb-1.5" style={{ color: 'var(--text-muted)' }}>음력 월</label>
+              <select id="lunar-month" value={form.month} onChange={e => setForm(f => ({ ...f, month: e.target.value }))}
                 className="w-full rounded-xl px-4 py-3 text-base"
                 style={{ background: 'var(--bg)', border: '1.5px solid var(--border)', color: form.month ? 'var(--text-primary)' : 'var(--text-muted)', outline: 'none' }}>
                 <option value="">월 선택</option>
@@ -270,8 +270,8 @@ export default function LunarCalculator({ initialItem }: Props) {
               </select>
             </div>
             <div className="flex-1">
-              <label className="block text-sm mb-1.5" style={{ color: 'var(--text-muted)' }}>음력 일</label>
-              <select value={form.day} onChange={e => setForm(f => ({ ...f, day: e.target.value }))}
+              <label htmlFor="lunar-day" className="block text-sm mb-1.5" style={{ color: 'var(--text-muted)' }}>음력 일</label>
+              <select id="lunar-day" value={form.day} onChange={e => setForm(f => ({ ...f, day: e.target.value }))}
                 className="w-full rounded-xl px-4 py-3 text-base"
                 style={{ background: 'var(--bg)', border: '1.5px solid var(--border)', color: form.day ? 'var(--text-primary)' : 'var(--text-muted)', outline: 'none' }}>
                 <option value="">일 선택</option>
@@ -282,10 +282,10 @@ export default function LunarCalculator({ initialItem }: Props) {
 
           {/* 태어난 해 — 선택. 있으면 나이와 환갑·칠순을 알려줄 수 있다 */}
           <div className="mb-4">
-            <label className="block text-sm mb-1.5" style={{ color: 'var(--text-muted)' }}>
+            <label htmlFor="lunar-year" className="block text-sm mb-1.5" style={{ color: 'var(--text-muted)' }}>
               태어난 해 <span style={{ opacity: 0.7 }}>(선택 — 넣으면 나이·환갑을 알려드려요)</span>
             </label>
-            <select value={form.year} onChange={e => setForm(f => ({ ...f, year: e.target.value }))}
+            <select id="lunar-year" value={form.year} onChange={e => setForm(f => ({ ...f, year: e.target.value }))}
               className="w-full rounded-xl px-4 py-3 text-base"
               style={{ background: 'var(--bg)', border: '1.5px solid var(--border)', color: form.year ? 'var(--text-primary)' : 'var(--text-muted)', outline: 'none' }}>
               <option value="">모르거나 건너뛰기</option>

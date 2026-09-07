@@ -60,7 +60,7 @@ export default function YundalPage() {
           </Section>
 
           <Section title="언제 윤달이 있나요? (2024~2030)">
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="윤달이 있는 해 표">
               <table className="w-full text-sm">
                 <thead>
                   <tr style={{ borderBottom: '1px solid var(--border)' }}>

@@ -36,7 +36,9 @@ export default function BottomNav() {
             aria-current={active ? 'page' : undefined}
             className="flex flex-col items-center gap-0.5 py-1 px-5 rounded-xl text-center transition-all"
             style={{
-              color: active ? 'var(--accent)' : 'var(--text-muted)',
+              // 켜진 탭은 연한 강조 배경 위에 놓인다. 기본 강조색은 그 위에서
+              // 4.2:1이라 기준에 못 미쳐, 한 단계 진한 색을 쓴다.
+              color: active ? 'var(--accent-strong)' : 'var(--text-muted)',
               background: active ? 'var(--accent-light)' : 'transparent',
             }}>
             <span className="text-xl" aria-hidden="true">{item.emoji}</span>

@@ -65,7 +65,7 @@ export default function HwangapPage() {
           </Section>
 
           <Section title="나이별 기념 생신">
-            <div className="overflow-x-auto -mx-1">
+            <div className="overflow-x-auto -mx-1" tabIndex={0} role="region" aria-label="나이별 기념 생신 표">
               <table className="w-full text-sm" style={{ borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ borderBottom: '1.5px solid var(--border)' }}>

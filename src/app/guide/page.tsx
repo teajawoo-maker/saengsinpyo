@@ -37,7 +37,7 @@ export default function GuidePage() {
                   <div className="flex flex-wrap gap-1.5">
                     {g.tags.map(t => (
                       <span key={t} className="text-xs px-2 py-0.5 rounded-full"
-                        style={{ background: 'var(--accent-light)', color: 'var(--accent)' }}>
+                        style={{ background: 'var(--accent-light)', color: 'var(--accent-strong)' }}>
                         #{t}
                       </span>
                     ))}

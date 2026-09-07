@@ -68,7 +68,7 @@ export default function TtiGanjiPage() {
           </Section>
 
           <Section title="연도별 띠 (최근 12년)">
-            <div className="overflow-x-auto -mx-1">
+            <div className="overflow-x-auto -mx-1" tabIndex={0} role="region" aria-label="연도별 띠 표">
               <table className="w-full text-sm" style={{ borderCollapse: 'collapse' }}>
                 <thead>
                   <tr style={{ borderBottom: '1.5px solid var(--border)' }}>
