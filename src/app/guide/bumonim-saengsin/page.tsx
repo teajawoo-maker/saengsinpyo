@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function BumonimPage() {
   return (
-    <main style={{ background: 'var(--bg)', minHeight: '100dvh' }}>
+    <main className="pb-24" style={{ background: 'var(--bg)', minHeight: '100dvh' }}>
       <article className="max-w-md mx-auto px-4 py-10">
         <Link href="/guide" className="inline-flex items-center gap-1 text-sm mb-8" style={{ color: 'var(--text-muted)' }}>
           ← 가이드 목록

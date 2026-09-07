@@ -153,27 +153,32 @@ export function convertLunar(input: LunarInput): ConvertResult {
 export function solarToLunar(input: SolarInput): SolarToLunarResult {
   const { year, month, day } = input;
 
+  const fail = (error: string): SolarToLunarResult => ({
+    lunarYear: 0, lunarMonth: 0, lunarDay: 0, isLeapMonth: false, error,
+  });
+
   if (year < 1900 || year > 2100) {
-    return { lunarMonth: 0, lunarDay: 0, isLeapMonth: false, error: '1900년~2100년 사이만 변환할 수 있어요.' };
+    return fail('1900년~2100년 사이만 변환할 수 있어요.');
   }
   if (month < 1 || month > 12 || day < 1 || day > 31) {
-    return { lunarMonth: 0, lunarDay: 0, isLeapMonth: false, error: '올바른 양력 날짜를 입력해 주세요.' };
+    return fail('올바른 양력 날짜를 입력해 주세요.');
   }
 
   try {
     const cal = new KoreanLunarCalendar();
     const ok = cal.setSolarDate(year, month, day);
     if (!ok) {
-      return { lunarMonth: 0, lunarDay: 0, isLeapMonth: false, error: '변환할 수 없는 날짜예요. 날짜를 다시 확인해 주세요.' };
+      return fail('변환할 수 없는 날짜예요. 날짜를 다시 확인해 주세요.');
     }
     const lunar = cal.getLunarCalendar();
     return {
+      lunarYear: lunar.year,
       lunarMonth: lunar.month,
       lunarDay: lunar.day,
       isLeapMonth: Boolean(lunar.intercalation),
     };
   } catch {
-    return { lunarMonth: 0, lunarDay: 0, isLeapMonth: false, error: '변환 중 문제가 생겼어요. 날짜를 다시 확인해 주세요.' };
+    return fail('변환 중 문제가 생겼어요. 날짜를 다시 확인해 주세요.');
   }
 }
 
@@ -187,6 +192,28 @@ export function getSolarForYears(input: LunarInput, years: number[]): SolarResul
   return years
     .map(y => findSolarInYear(y, month, day, leapStatus, shortMonthFallback, leapFallback))
     .filter((r): r is SolarResult => r !== null);
+}
+
+/**
+ * 음력 생년월일이 실제로 몇 년도(양력)인지.
+ *
+ * 음력 11~12월은 양력으로 다음 해에 걸친다. 음력 1965년 12월생은
+ * 양력 1966년생이라, 음력 연도를 그대로 나이 계산에 쓰면 한 살 어긋난다.
+ * 찾지 못하면 null을 준다.
+ */
+export function lunarBirthToSolarYear(
+  lunarYear: number,
+  lunarMonth: number,
+  lunarDay: number,
+  isLeap: boolean
+): number | null {
+  const exact = lunarToSolar(lunarYear, lunarMonth, lunarDay, isLeap);
+  if (exact) return exact.year;
+  // 그 해에 윤달이나 30일이 없을 수 있다. 평달·29일로 한 번 더 시도한다.
+  const fallback =
+    lunarToSolar(lunarYear, lunarMonth, lunarDay, false) ??
+    (lunarDay === 30 ? lunarToSolar(lunarYear, lunarMonth, 29, false) : null);
+  return fallback ? fallback.year : null;
 }
 
 export function formatDDay(dDay: number): string {

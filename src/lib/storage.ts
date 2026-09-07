@@ -11,6 +11,12 @@ export interface SavedBirthday {
    * 연도 없이 음력 월/일만 입력한 경우도 있어 선택 항목이다.
    */
   birthYear?: number;
+  /**
+   * 태어난 해의 음력 연도. 간지·띠를 구하는 데 쓴다.
+   * 간지는 음력 설날에 바뀌어서 양력 생년으로 계산하면
+   * 1~2월 초 출생자가 한 해 어긋난다.
+   */
+  birthLunarYear?: number;
   savedAt: number;
   starred: boolean;
 }
@@ -44,11 +50,14 @@ export function getSaved(): SavedBirthday[] {
 export function saveBirthday(
   label: string,
   input: LunarInput,
-  birthYear?: number
+  birthYear?: number,
+  birthLunarYear?: number
 ): SavedBirthday {
   const items = loadAll();
   const id = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-  const item: SavedBirthday = { id, label, input, birthYear, savedAt: Date.now(), starred: false };
+  const item: SavedBirthday = {
+    id, label, input, birthYear, birthLunarYear, savedAt: Date.now(), starred: false,
+  };
   saveAll([...items, item]);
   return item;
 }

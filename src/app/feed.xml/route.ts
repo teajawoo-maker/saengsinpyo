@@ -20,6 +20,18 @@ const GUIDES = [
     description:
       '어머니 생신이 음력 몇 월 며칠인데, 올해 양력으로 언제지? 이런 고민을 2초 만에 해결하세요.',
   },
+  {
+    title: '환갑은 몇 살인가요? — 환갑·칠순·팔순 나이 정리',
+    link: `${BASE_URL}/guide/hwangap-chilsun`,
+    description:
+      '만 나이와 세는나이가 달라 헷갈리는 환갑·진갑·칠순·팔순·구순 기준과 잔치 시기를 정리했습니다.',
+  },
+  {
+    title: '내 띠는 무엇일까요? — 띠가 바뀌는 날은 설날입니다',
+    link: `${BASE_URL}/guide/tti-ganji`,
+    description:
+      '양력 1~2월에 태어나면 띠가 앞 해가 될 수 있어요. 간지의 뜻과 연도별 띠 표를 확인하세요.',
+  },
 ];
 
 export async function GET() {

@@ -33,11 +33,11 @@ export default function HomePage() {
         <div className="relative">
           <div className="inline-flex items-center justify-center mb-4 rounded-full"
             style={{
-              width: 68, height: 68,
+              width: 104, height: 104,
               background: 'linear-gradient(145deg, #ffc46b 0%, var(--accent) 100%)',
               boxShadow: 'var(--shadow-accent)',
             }}>
-            <span className="text-3xl" role="img" aria-label="생신">🎂</span>
+            <span style={{ fontSize: '58px', lineHeight: 1 }} role="img" aria-label="생신">🎂</span>
           </div>
 
           <h1 className="text-[28px] font-black tracking-tight leading-tight" style={{ color: 'var(--text-primary)' }}>
@@ -111,27 +111,6 @@ export default function HomePage() {
         </p>
       </footer>
 
-      {/* 하단 네비게이션 */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 flex justify-around items-center px-2 py-2 safe-area-bottom"
-        style={{ background: 'var(--bg-card)', borderTop: '1px solid var(--border-light)', backdropFilter: 'blur(10px)' }}>
-        <NavItem href="/" emoji="🎂" label="계산기" active />
-        <NavItem href="/guide" emoji="📖" label="가이드" />
-        <NavItem href="/about" emoji="ℹ️" label="계산기준" />
-      </nav>
     </main>
-  );
-}
-
-function NavItem({ href, emoji, label, active }: { href: string; emoji: string; label: string; active?: boolean }) {
-  return (
-    <Link href={href}
-      className="flex flex-col items-center gap-0.5 py-1 px-5 rounded-xl text-center transition-all"
-      style={{
-        color: active ? 'var(--accent)' : 'var(--text-muted)',
-        background: active ? 'var(--accent-light)' : 'transparent',
-      }}>
-      <span className="text-xl">{emoji}</span>
-      <span className="text-xs font-medium">{label}</span>
-    </Link>
   );
 }

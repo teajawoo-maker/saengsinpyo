@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <main style={{ background: 'var(--bg)', minHeight: '100dvh' }}>
+    <main className="pb-24" style={{ background: 'var(--bg)', minHeight: '100dvh' }}>
       <article className="max-w-md mx-auto px-4 py-10">
         <Link href="/" className="inline-flex items-center gap-1 text-sm mb-8" style={{ color: 'var(--text-muted)' }}>
           ← 계산기로 돌아가기

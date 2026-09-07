@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { BASE_URL, NAVER_SITE_VERIFICATION } from '@/lib/siteConfig';
+import BottomNav from '@/components/BottomNav';
 
 export const metadata: Metadata = {
   title: '우리집 생신표 | 음력 생일 양력 변환',
@@ -25,7 +26,7 @@ export const metadata: Metadata = {
     // 카카오톡 스크래퍼가 그런 이미지를 가져오지 못해 썸네일이 비었다.
     images: [
       {
-        url: `${BASE_URL}/og-image.png`,
+        url: `${BASE_URL}/og-image-v2.png`,
         width: 1200,
         height: 630,
         alt: '우리집 생신표 — 음력 생일을 양력으로',
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: '우리집 생신표',
     description: '음력 생일을 양력으로 변환해 드려요.',
-    images: [`${BASE_URL}/og-image.png`],
+    images: [`${BASE_URL}/og-image-v2.png`],
   },
   robots: {
     index: true,
@@ -91,7 +92,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <BottomNav />
+      </body>
     </html>
   );
 }

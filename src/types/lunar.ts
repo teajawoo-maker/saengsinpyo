@@ -40,6 +40,12 @@ export interface SolarInput {
 
 /** 양력 생년월일 → 그 사람의 음력 생일 */
 export interface SolarToLunarResult {
+  /**
+   * 음력 연도. 간지를 계산하려면 이 값이 필요하다.
+   * 간지는 음력 설날에 바뀌어서, 양력 1~2월 초 출생자는
+   * 양력 연도와 음력 연도가 다르다.
+   */
+  lunarYear: number;
   lunarMonth: number;
   lunarDay: number;
   isLeapMonth: boolean;

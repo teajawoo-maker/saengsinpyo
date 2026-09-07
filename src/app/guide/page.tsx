@@ -28,11 +28,25 @@ const guides = [
     desc: '매년 달라지는 부모님 음력 생신을 올해 양력 날짜로 정확하게 확인하는 방법',
     tags: ['부모님 생신', '양력 변환', '음력 달력'],
   },
+  {
+    href: '/guide/hwangap-chilsun',
+    emoji: '🎉',
+    title: '환갑은 몇 살인가요?',
+    desc: '만 나이와 세는나이가 달라 헷갈리는 환갑·칠순·팔순 기준과 잔치 시기를 정리했어요',
+    tags: ['환갑 나이', '칠순', '팔순', '진갑'],
+  },
+  {
+    href: '/guide/tti-ganji',
+    emoji: '🐴',
+    title: '내 띠는 무엇일까요?',
+    desc: '띠가 바뀌는 날은 설날이에요. 1~2월생이 헷갈리는 이유와 연도별 띠 표',
+    tags: ['띠 계산', '간지', '육십갑자'],
+  },
 ];
 
 export default function GuidePage() {
   return (
-    <main style={{ background: 'var(--bg)', minHeight: '100dvh' }}>
+    <main className="pb-24" style={{ background: 'var(--bg)', minHeight: '100dvh' }}>
       <div className="max-w-md mx-auto px-4 py-10">
         <Link href="/" className="inline-flex items-center gap-1 text-sm mb-8"
           style={{ color: 'var(--text-muted)' }}>

@@ -2,8 +2,9 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { convertLunar, solarToLunar, formatDDay } from '@/lib/lunarConverter';
+import { convertLunar, solarToLunar, formatDDay, lunarBirthToSolarYear } from '@/lib/lunarConverter';
 import { ageAtBirthday, getMilestone } from '@/lib/age';
+import { getGanji } from '@/lib/ganji';
 import { saveBirthday } from '@/lib/storage';
 import type { LunarInput, ConvertResult, LeapStatus, ShortMonthFallback, LeapFallback, SolarResult, InputMode } from '@/types/lunar';
 import type { SavedBirthday } from '@/lib/storage';
@@ -59,6 +60,8 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
   // 나이와 환갑·칠순 계산에 필요한 양력 생년. 양력으로 입력했거나
   // 생년이 저장된 항목을 불러온 경우에만 값이 있다.
   const [birthYear, setBirthYear] = useState<number | undefined>(initialItem?.birthYear);
+  // 간지는 음력 설날에 바뀌므로 양력 생년이 아니라 음력 연도로 구해야 한다
+  const [birthLunarYear, setBirthLunarYear] = useState<number | undefined>(initialItem?.birthLunarYear);
   const [result, setResult] = useState<ConvertResult | null>(null);
   const [showShare, setShowShare] = useState(false);
   const [showSaveInput, setShowSaveInput] = useState(false);
@@ -78,8 +81,19 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
       shortMonthFallback: form.shortMonthFallback,
       leapFallback: form.leapFallback,
     };
-    // 태어난 해는 선택 항목이다. 넣었으면 나이 계산에 쓴다.
-    setBirthYear(form.year ? parseInt(form.year) : undefined);
+    // 태어난 해는 선택 항목이다. 음력 날짜를 넣는 화면이므로
+    // 여기서 고른 해는 음력 연도로 본다. 나이는 양력 기준이라
+    // 실제 양력 출생 연도로 바꿔서 쓴다.
+    if (form.year) {
+      const lunarYear = parseInt(form.year);
+      setBirthLunarYear(lunarYear);
+      setBirthYear(
+        lunarBirthToSolarYear(lunarYear, month, day, form.leapStatus === 'leap') ?? lunarYear
+      );
+    } else {
+      setBirthLunarYear(undefined);
+      setBirthYear(undefined);
+    }
     setResult(convertLunar(input));
   }, [form]);
 
@@ -98,6 +112,7 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
     }
     setSolarError('');
     setBirthYear(year);
+    setBirthLunarYear(lunar.lunarYear);
 
     const leapStatus: LeapStatus = lunar.isLeapMonth ? 'leap' : 'regular';
     setForm({
@@ -130,12 +145,12 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
       shortMonthFallback: form.shortMonthFallback,
       leapFallback: form.leapFallback,
     };
-    saveBirthday(label, input, birthYear);
+    saveBirthday(label, input, birthYear, birthLunarYear);
     setSavedMsg(`'${label}' 저장됐어요!`);
     setShowSaveInput(false);
     setTimeout(() => setSavedMsg(''), 3000);
     onSaved?.();
-  }, [form, saveLabel, birthYear, onSaved]);
+  }, [form, saveLabel, birthYear, birthLunarYear, onSaved]);
 
   // 불러온 항목은 바로 결과까지 보여준다. 상태 초기값을 initialItem에서
   // 잡으므로, 다른 항목을 누르면 page에서 key를 바꿔 새로 마운트시킨다.
@@ -418,6 +433,20 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
                           만 {age}세
                         </span>
                       </div>
+
+                      {/* 간지·띠 — 어르신들이 자기 해를 기억하는 방식 */}
+                      {birthLunarYear && (() => {
+                        const g = getGanji(birthLunarYear);
+                        return (
+                          <div className="flex items-center justify-center gap-2 mt-2.5">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium"
+                              style={{ background: 'var(--bg-soft)', color: 'var(--text-secondary)' }}>
+                              <span aria-hidden="true">{g.zodiacEmoji}</span>
+                              {g.yearName} {g.zodiacLabel}
+                            </span>
+                          </div>
+                        );
+                      })()}
                       {milestone && (
                         <div className="mt-3 rounded-2xl p-3.5 text-center"
                           style={{
