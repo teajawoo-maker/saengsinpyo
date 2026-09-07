@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import AdSlot from '@/components/AdSlot';
+import { AD_SLOTS } from '@/lib/adsense';
 
 export const metadata: Metadata = {
   title: '윤달 생일 계산법 | 우리집 생신표',
@@ -83,6 +85,9 @@ export default function YundalPage() {
             <p className="text-xs mt-2" style={{ color: 'var(--text-muted)' }}>※ 한국천문연구원(KASI) 공식 자료 기준</p>
           </Section>
         </div>
+
+        {/* 글을 다 읽은 자리. 본문 중간을 끊지 않는다 */}
+        <AdSlot slot={AD_SLOTS.articleEnd} className="mt-8" />
 
         <div className="mt-8 p-5 rounded-2xl text-center" style={{ background: 'var(--accent-light)', border: '1px solid var(--border-light)' }}>
           <p className="text-sm mb-3" style={{ color: 'var(--text-secondary)' }}>

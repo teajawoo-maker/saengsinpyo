@@ -22,31 +22,54 @@ export default function ShareModal({ result, label, lunarMonth, lunarDay, onClos
   const nextYear = result.nextYear;
   const nearest = result.nearest;
 
-  const generateImage = useCallback(async () => {
-    if (!cardRef.current) return;
+  const buildImage = useCallback(async (): Promise<Blob | null> => {
+    if (!cardRef.current) return null;
+    const html2canvas = (await import('html2canvas')).default;
+    const canvas = await html2canvas(cardRef.current, {
+      scale: 2,
+      backgroundColor: '#fff4e6',
+      useCORS: true,
+      logging: false,
+    });
+    return new Promise(resolve => canvas.toBlob(b => resolve(b), 'image/png'));
+  }, []);
+
+  const saveImage = useCallback((blob: Blob) => {
+    const url = URL.createObjectURL(blob);
+    setImageUrl(url);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `생신표_음력${lunarMonth}월${lunarDay}일.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }, [lunarMonth, lunarDay]);
+
+  /**
+   * 이미지를 공유 시트로 넘긴다. 카카오톡·인스타그램 등 기기에 깔린 앱이
+   * 거기서 선택된다. 예전에는 instagram:// 을 열고 1.5초 뒤 웹을 또 열었는데,
+   * 앱이 있어도 웹이 함께 떠서 어수선했다.
+   * 공유 시트를 못 쓰는 환경에서는 이미지를 저장해 준다.
+   */
+  const shareImage = useCallback(async () => {
     setStatus('loading');
     try {
-      const html2canvas = (await import('html2canvas')).default;
-      const canvas = await html2canvas(cardRef.current, {
-        scale: 2,
-        backgroundColor: '#fff4e6',
-        useCORS: true,
-        logging: false,
-      });
-      setImageUrl(canvas.toDataURL('image/png'));
+      const blob = await buildImage();
+      if (!blob) { setStatus('idle'); return; }
+      const file = new File([blob], `생신표_음력${lunarMonth}월${lunarDay}일.png`, { type: 'image/png' });
+
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ files: [file], title: '우리집 생신표' }).catch(() => {});
+        setStatus('idle');
+        return;
+      }
+      saveImage(blob);
       setStatus('done');
     } catch {
       setStatus('idle');
     }
-  }, []);
-
-  const downloadImage = useCallback(() => {
-    if (!imageUrl) return;
-    const a = document.createElement('a');
-    a.href = imageUrl;
-    a.download = `생신표_음력${lunarMonth}월${lunarDay}일.png`;
-    a.click();
-  }, [imageUrl, lunarMonth, lunarDay]);
+  }, [buildImage, saveImage, lunarMonth, lunarDay]);
 
   const shareText = useCallback(async () => {
     const lines = [
@@ -72,29 +95,6 @@ export default function ShareModal({ result, label, lunarMonth, lunarDay, onClos
     }
   }, [label, lunarMonth, lunarDay, thisYear, nextYear, nearest]);
 
-  const shareToInstagram = useCallback(async () => {
-    // 인스타그램은 직접 공유 API 없음 → 이미지 저장 후 인스타 DM으로 이동
-    if (imageUrl) {
-      downloadImage();
-    }
-    setTimeout(() => {
-      window.open('instagram://camera', '_blank');
-      // 앱이 없으면 스토어로
-      setTimeout(() => {
-        window.open('https://www.instagram.com/direct/inbox/', '_blank');
-      }, 1500);
-    }, 300);
-  }, [imageUrl, downloadImage]);
-
-  const shareToKakao = useCallback(async () => {
-    const text = `🎂 ${label || `음력 ${lunarMonth}월 ${lunarDay}일 생신`}\n올해: ${thisYear ? formatDate(thisYear) : '확인 불가'}\n\n우리집 생신표 → ${BASE_URL}`;
-    if (navigator.share) {
-      await navigator.share({ text }).catch(() => {});
-    } else {
-      await navigator.clipboard.writeText(text).catch(() => {});
-      alert('클립보드에 복사됐어요!\n카카오톡에 붙여넣기 하세요.');
-    }
-  }, [label, lunarMonth, lunarDay, thisYear]);
 
   return (
     <div
@@ -159,60 +159,25 @@ export default function ShareModal({ result, label, lunarMonth, lunarDay, onClos
           </p>
         </div>
 
-        {/* 이미지 생성 버튼 */}
-        {status === 'idle' && (
-          <button
-            type="button"
-            onClick={generateImage}
-            className="w-full py-3 rounded-xl text-sm font-semibold mb-3"
-            style={{ background: 'var(--accent)', color: '#fff' }}
-          >
-            이미지 카드 생성하기
+        <div className="grid grid-cols-2 gap-2">
+          <button type="button" onClick={shareImage} disabled={status === 'loading'}
+            className="py-3 rounded-xl text-sm font-bold transition-transform active:scale-95"
+            style={{ background: 'var(--gold)', color: 'var(--gold-deep)' }}>
+            {status === 'loading' ? '만드는 중…' : '📤 이미지 공유'}
           </button>
-        )}
-        {status === 'loading' && (
-          <div className="w-full py-3 rounded-xl text-sm text-center mb-3" style={{ color: 'var(--text-muted)', background: 'var(--bg)' }}>
-            이미지 생성 중...
-          </div>
-        )}
-        {status === 'done' && imageUrl && (
-          <button
-            type="button"
-            onClick={downloadImage}
-            className="w-full py-3 rounded-xl text-sm font-semibold mb-3"
-            style={{ background: 'var(--accent)', color: '#fff' }}
-          >
-            📷 이미지 저장하기
+          <button type="button" onClick={shareText}
+            className="py-3 rounded-xl text-sm font-bold transition-transform active:scale-95"
+            style={{ background: 'var(--bg)', color: 'var(--text-secondary)', border: '1.5px solid var(--border)' }}>
+            📝 글로 공유
           </button>
-        )}
-
-        {/* 공유 버튼 목록 */}
-        <div className="grid grid-cols-3 gap-3">
-          <ShareButton emoji="💬" label="카카오톡" onClick={shareToKakao} color="#FAE100" textColor="#3C1E1E" />
-          <ShareButton emoji="📸" label="인스타그램 DM" onClick={shareToInstagram} color="#E1306C" textColor="#fff" />
-          <ShareButton emoji="📋" label="텍스트 복사" onClick={shareText} color="var(--bg)" textColor="var(--text-secondary)" />
         </div>
 
-        <p className="text-xs text-center mt-4" style={{ color: 'var(--text-muted)' }}>
-          인스타그램은 이미지 저장 후 DM에서 직접 첨부해 주세요.
-        </p>
+        {status === 'done' && imageUrl && (
+          <p className="text-xs text-center mt-3" style={{ color: 'var(--text-muted)' }}>
+            이미지가 저장됐어요. 카카오톡이나 인스타그램에서 사진으로 보내보세요.
+          </p>
+        )}
       </div>
     </div>
-  );
-}
-
-function ShareButton({ emoji, label, onClick, color, textColor }: {
-  emoji: string; label: string; onClick: () => void; color: string; textColor: string;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="flex flex-col items-center gap-1.5 py-3 rounded-xl text-xs font-medium transition-all"
-      style={{ background: color, color: textColor, border: '1px solid var(--border)' }}
-    >
-      <span className="text-xl">{emoji}</span>
-      <span className="leading-tight text-center">{label}</span>
-    </button>
   );
 }

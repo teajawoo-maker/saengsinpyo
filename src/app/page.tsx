@@ -4,6 +4,8 @@ import { useState, useMemo, useSyncExternalStore } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { subscribe, getRawSnapshot, getServerSnapshot, type SavedBirthday } from '@/lib/storage';
+import { AD_SLOTS } from '@/lib/adsense';
+import AdSlot from '@/components/AdSlot';
 
 const LunarCalculator = dynamic(() => import('@/components/LunarCalculator'), { ssr: false });
 const SavedBirthdays = dynamic(() => import('@/components/SavedBirthdays'), { ssr: false });
@@ -101,6 +103,14 @@ export default function HomePage() {
           </Link>
         </div>
       </section>
+
+      {/*
+        광고는 여기 한 곳뿐이다. 계산을 마치고 안내까지 읽은 뒤라
+        도구를 쓰는 흐름을 끊지 않는다. 첫 화면에는 두지 않는다.
+      */}
+      <div className="max-w-md mx-auto px-4 pb-6">
+        <AdSlot slot={AD_SLOTS.homeBottom} />
+      </div>
 
       {/* 푸터 */}
       <footer className="text-center pb-4 px-4">

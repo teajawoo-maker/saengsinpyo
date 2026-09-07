@@ -1,35 +1,56 @@
 'use client';
 
-/**
- * 광고 자리.
- *
- * 애드센스는 아직 연동하지 않는다. 승인 코드를 받으면
- * NEXT_PUBLIC_ADSENSE_CLIENT를 채우고 아래 주석대로 스크립트를 붙이면 된다.
- *
- * 클라이언트 ID가 없으면 아무것도 그리지 않는다. 빈 점선 상자를 남기면
- * 깨진 요소처럼 보이고 레이아웃만 밀어낸다.
- */
+import { useEffect, useRef } from 'react';
+import { ADSENSE_CLIENT, isAdsenseEnabled } from '@/lib/adsense';
 
-const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
+declare global {
+  interface Window {
+    adsbygoogle?: unknown[];
+  }
+}
 
 interface Props {
-  /** 애드센스 광고 단위 ID (승인 후 발급) */
-  slot?: string;
+  /** 애드센스 광고 단위 ID */
+  slot: string;
+  /** 광고 위에 붙일 안내 문구를 바꾸고 싶을 때 */
+  label?: string;
   className?: string;
 }
 
-export default function AdSlot({ slot, className }: Props) {
-  if (!ADSENSE_CLIENT || !slot) return null;
+/**
+ * 광고 한 칸.
+ *
+ * 설정이 없으면 아무것도 그리지 않는다. 빈 자리를 남겨 두면 깨진 요소처럼
+ * 보이고 자리만 밀어낸다.
+ *
+ * 광고임을 작게 밝혀 둔다. 본문과 구분이 안 되면 잘못 누르게 되고,
+ * 그건 사용자에게도 애드센스 정책상으로도 좋지 않다.
+ */
+export default function AdSlot({ slot, label = '광고', className }: Props) {
+  const pushed = useRef(false);
 
-  // 연동할 때 할 일:
-  // 1. layout.tsx <head>에 애드센스 스크립트 한 줄 추가
-  //    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=..." crossOrigin="anonymous" />
-  // 2. 아래 ins 태그가 렌더된 뒤 (window.adsbygoogle = window.adsbygoogle || []).push({})
+  useEffect(() => {
+    if (!isAdsenseEnabled || !slot) return;
+    // 개발 중 다시 그릴 때 같은 자리에 두 번 넣지 않도록 막는다
+    if (pushed.current) return;
+    pushed.current = true;
+    try {
+      (window.adsbygoogle = window.adsbygoogle ?? []).push({});
+    } catch {
+      // 광고 차단기 등으로 실패해도 화면은 그대로 쓸 수 있어야 한다
+    }
+  }, [slot]);
+
+  if (!isAdsenseEnabled || !slot) return null;
+
   return (
-    <div className={className} aria-label="광고">
+    <div className={className}>
+      <p className="text-center mb-1" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+        {label}
+      </p>
       <ins
         className="adsbygoogle"
-        style={{ display: 'block' }}
+        style={{ display: 'block', minHeight: 100 }}
         data-ad-client={ADSENSE_CLIENT}
         data-ad-slot={slot}
         data-ad-format="auto"

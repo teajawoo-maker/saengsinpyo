@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import AdSlot from '@/components/AdSlot';
+import { AD_SLOTS } from '@/lib/adsense';
 
 export const metadata: Metadata = {
   title: '부모님·조부모님 음력 생신 양력 변환 | 우리집 생신표',
@@ -79,6 +81,9 @@ export default function BumonimPage() {
             </p>
           </div>
         </div>
+
+        {/* 글을 다 읽은 자리. 본문 중간을 끊지 않는다 */}
+        <AdSlot slot={AD_SLOTS.articleEnd} className="mt-8" />
 
         <div className="mt-8 p-5 rounded-2xl text-center" style={{ background: 'var(--accent-light)', border: '1px solid var(--border-light)' }}>
           <p className="text-sm mb-3" style={{ color: 'var(--text-secondary)' }}>

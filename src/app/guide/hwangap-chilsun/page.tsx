@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import AdSlot from '@/components/AdSlot';
+import { AD_SLOTS } from '@/lib/adsense';
 
 export const metadata: Metadata = {
   title: '환갑·칠순·팔순 나이 계산 | 우리집 생신표',
@@ -107,6 +109,9 @@ export default function HwangapPage() {
             </p>
           </Section>
         </div>
+
+        {/* 글을 다 읽은 자리. 본문 중간을 끊지 않는다 */}
+        <AdSlot slot={AD_SLOTS.articleEnd} className="mt-8" />
 
         <div className="mt-8 p-5 rounded-2xl text-center" style={{ background: 'var(--accent-light)', border: '1px solid var(--border-light)' }}>
           <p className="text-sm mb-3" style={{ color: 'var(--text-secondary)' }}>

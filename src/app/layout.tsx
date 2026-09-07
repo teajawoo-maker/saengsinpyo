@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import Script from 'next/script';
 import { BASE_URL, NAVER_SITE_VERIFICATION } from '@/lib/siteConfig';
+import { ADSENSE_CLIENT, isAdsenseEnabled } from '@/lib/adsense';
 import BottomNav from '@/components/BottomNav';
 
 export const metadata: Metadata = {
@@ -95,6 +97,19 @@ export default function RootLayout({
       <body>
         {children}
         <BottomNav />
+
+        {/*
+          애드센스 스크립트. 설정이 없으면 아예 넣지 않는다.
+          lazyOnload로 두어 첫 화면이 그려지는 속도를 늦추지 않는다.
+        */}
+        {isAdsenseEnabled && (
+          <Script
+            id="adsbygoogle-init"
+            strategy="lazyOnload"
+            crossOrigin="anonymous"
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+          />
+        )}
       </body>
     </html>
   );
