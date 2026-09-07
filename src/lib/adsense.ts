@@ -25,8 +25,8 @@ export const isAdsenseEnabled = ADSENSE_CLIENT.length > 0;
  * 자동 광고만 쓸 경우 비워 두어도 되고, 그때는 개별 자리를 그리지 않는다.
  */
 export const AD_SLOTS = {
-  /** 홈 화면 맨 아래 */
-  homeBottom: process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME ?? '',
-  /** 가이드 글 끝 */
-  articleEnd: process.env.NEXT_PUBLIC_ADSENSE_SLOT_ARTICLE ?? '',
+  /** 홈 화면 맨 아래 (saengsinpyo-home-bottom) */
+  homeBottom: process.env.NEXT_PUBLIC_ADSENSE_SLOT_HOME ?? '4161910707',
+  /** 가이드 글 끝 (saengsinpyo-article-end) */
+  articleEnd: process.env.NEXT_PUBLIC_ADSENSE_SLOT_ARTICLE ?? '3749023332',
 } as const;
