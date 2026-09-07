@@ -52,7 +52,7 @@ export default function AboutPage() {
             <ul className="space-y-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
               <li>• 올해 생신은 음력 연도 기준이 아닌, <strong>양력 1월 1일~12월 31일</strong> 사이에 해당하는 날짜입니다.</li>
               <li>• 음력 11~12월은 양력 연도가 넘어갈 수 있어서 음력 연도를 단순 대입하지 않습니다.</li>
-              <li>• 오늘보다 이미 지난 올해 날짜는 '지났어요'로 표시하고, 내년 날짜를 안내합니다.</li>
+              <li>• 오늘보다 이미 지난 올해 날짜는 &lsquo;지났어요&rsquo;로 표시하고, 내년 날짜를 안내합니다.</li>
             </ul>
           </InfoBlock>
 
@@ -69,8 +69,8 @@ export default function AboutPage() {
             <div className="text-sm leading-relaxed space-y-1" style={{ color: 'var(--text-secondary)' }}>
               <p>날짜 계산의 특성상 다음 표현은 사용하지 않습니다:</p>
               <ul className="mt-2 space-y-1" style={{ color: 'var(--text-muted)' }}>
-                <li>• "윤달도 완벽하게 자동 처리" (가족 관습은 직접 선택해야 합니다)</li>
-                <li>• "모든 음력 날짜를 100% 정확하게" (지원 범위와 라이브러리 한계가 있습니다)</li>
+                <li>• &ldquo;윤달도 완벽하게 자동 처리&rdquo; (가족 관습은 직접 선택해야 합니다)</li>
+                <li>• &ldquo;모든 음력 날짜를 100% 정확하게&rdquo; (지원 범위와 라이브러리 한계가 있습니다)</li>
               </ul>
             </div>
           </InfoBlock>

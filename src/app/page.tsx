@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useMemo, useSyncExternalStore } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import type { SavedBirthday } from '@/lib/storage';
+import { subscribe, getRawSnapshot, getServerSnapshot, type SavedBirthday } from '@/lib/storage';
 
 const LunarCalculator = dynamic(() => import('@/components/LunarCalculator'), { ssr: false });
 const SavedBirthdays = dynamic(() => import('@/components/SavedBirthdays'), { ssr: false });
@@ -11,16 +11,24 @@ const SeasonalSection = dynamic(() => import('@/components/SeasonalSection'), { 
 const BackupSection = dynamic(() => import('@/components/BackupSection'), { ssr: false });
 
 export default function HomePage() {
-  const [savedKey, setSavedKey] = useState(0);
   const [loadedItem, setLoadedItem] = useState<SavedBirthday | null>(null);
-  const [savedCount, setSavedCount] = useState(0);
 
-  const handleSaved = () => setSavedKey(k => k + 1);
+  // 저장 개수는 저장소를 직접 구독해서 안다. 목록 컴포넌트가
+  // 부모에게 알려줄 필요가 없다.
+  const raw = useSyncExternalStore(subscribe, getRawSnapshot, getServerSnapshot);
+  const savedCount = useMemo(() => {
+    try {
+      const parsed = JSON.parse(raw) as unknown;
+      return Array.isArray(parsed) ? parsed.length : 0;
+    } catch {
+      return 0;
+    }
+  }, [raw]);
+
   const handleLoad = (item: SavedBirthday) => {
     setLoadedItem(item);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-  const handleCountChange = useCallback((n: number) => setSavedCount(n), []);
 
   return (
     <main className="min-h-dvh pb-20" style={{ background: 'var(--bg)' }}>
@@ -57,24 +65,17 @@ export default function HomePage() {
       {/* 계산기 — 저장된 생신을 누르면 key가 바뀌며 그 값으로 새로 마운트된다 */}
       <LunarCalculator
         key={loadedItem?.id ?? 'new'}
-        onSaved={handleSaved}
         initialItem={loadedItem}
       />
 
       {/* 저장된 생신 목록 */}
-      <SavedBirthdays
-        onLoad={handleLoad}
-        refreshKey={savedKey}
-        onCountChange={handleCountChange}
-      />
+      <SavedBirthdays onLoad={handleLoad} />
 
       {/* 절기 섹션 */}
       <SeasonalSection />
 
       {/* 백업 — 저장한 생신이 있을 때만 안내한다 */}
-      {savedCount > 0 && (
-        <BackupSection count={savedCount} onImported={handleSaved} />
-      )}
+      {savedCount > 0 && <BackupSection count={savedCount} />}
 
       {/* 안내 섹션 */}
       <section className="max-w-md mx-auto px-4 pb-6">

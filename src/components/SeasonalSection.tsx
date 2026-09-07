@@ -1,14 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { getUpcomingSeasonalDays, formatSeasonalDate, getDDayLabel, type SeasonalDay } from '@/lib/seasonalDays';
 
 export default function SeasonalSection() {
-  const [days, setDays] = useState<SeasonalDay[]>([]);
-
-  useEffect(() => {
-    setDays(getUpcomingSeasonalDays(4));
-  }, []);
+  // 오늘 날짜에 따라 달라지는 값이라 서버에서 그리면 안 맞는다.
+  // 이 컴포넌트는 ssr:false로 불러오므로 처음 그릴 때 바로 계산해도 된다.
+  const [days] = useState<SeasonalDay[]>(() => getUpcomingSeasonalDays(4));
 
   if (days.length === 0) return null;
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { convertLunar, solarToLunar, formatDDay, lunarBirthToSolarYear } from '@/lib/lunarConverter';
 import { ageAtBirthday, getMilestone } from '@/lib/age';
@@ -38,11 +38,10 @@ interface SolarFormState {
 }
 
 interface Props {
-  onSaved?: () => void;
   initialItem?: SavedBirthday | null;
 }
 
-export default function LunarCalculator({ onSaved, initialItem }: Props) {
+export default function LunarCalculator({ initialItem }: Props) {
   const [form, setForm] = useState<FormState>({
     month: initialItem ? String(initialItem.input.month) : '',
     day: initialItem ? String(initialItem.input.day) : '',
@@ -62,7 +61,11 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
   const [birthYear, setBirthYear] = useState<number | undefined>(initialItem?.birthYear);
   // 간지는 음력 설날에 바뀌므로 양력 생년이 아니라 음력 연도로 구해야 한다
   const [birthLunarYear, setBirthLunarYear] = useState<number | undefined>(initialItem?.birthLunarYear);
-  const [result, setResult] = useState<ConvertResult | null>(null);
+  // 불러온 항목은 처음부터 결과까지 보여준다. 다른 항목을 누르면
+  // page에서 key를 바꿔 새로 마운트되므로 이 초기값이 다시 계산된다.
+  const [result, setResult] = useState<ConvertResult | null>(
+    () => (initialItem ? convertLunar(initialItem.input) : null)
+  );
   const [showShare, setShowShare] = useState(false);
   const [showSaveInput, setShowSaveInput] = useState(false);
   const [saveLabel, setSaveLabel] = useState(initialItem?.label ?? '');
@@ -149,14 +152,9 @@ export default function LunarCalculator({ onSaved, initialItem }: Props) {
     setSavedMsg(`'${label}' 저장됐어요!`);
     setShowSaveInput(false);
     setTimeout(() => setSavedMsg(''), 3000);
-    onSaved?.();
-  }, [form, saveLabel, birthYear, birthLunarYear, onSaved]);
 
-  // 불러온 항목은 바로 결과까지 보여준다. 상태 초기값을 initialItem에서
-  // 잡으므로, 다른 항목을 누르면 page에서 key를 바꿔 새로 마운트시킨다.
-  useEffect(() => {
-    if (initialItem) setResult(convertLunar(initialItem.input));
-  }, [initialItem]);
+  }, [form, saveLabel, birthYear, birthLunarYear]);
+
 
   return (
     <>

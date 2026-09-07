@@ -1,8 +1,11 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useMemo, useSyncExternalStore } from 'react';
 import dynamic from 'next/dynamic';
-import { getSaved, deleteBirthday, toggleStar, type SavedBirthday } from '@/lib/storage';
+import {
+  subscribe, getRawSnapshot, getServerSnapshot,
+  deleteBirthday, toggleStar, type SavedBirthday,
+} from '@/lib/storage';
 import { convertLunar, formatDDay } from '@/lib/lunarConverter';
 import { ageAtBirthday, getMilestone } from '@/lib/age';
 import { downloadIcs } from '@/lib/ics';
@@ -23,21 +26,22 @@ interface Row {
 
 interface Props {
   onLoad: (item: SavedBirthday) => void;
-  refreshKey: number;
-  /** 백업 섹션에 개수를 넘기기 위해 목록이 바뀔 때 알려준다 */
-  onCountChange?: (count: number) => void;
 }
 
-export default function SavedBirthdays({ onLoad, refreshKey, onCountChange }: Props) {
-  const [items, setItems] = useState<SavedBirthday[]>([]);
+export default function SavedBirthdays({ onLoad }: Props) {
   const [showShare, setShowShare] = useState(false);
 
-  const reload = useCallback(() => {
-    try { setItems(getSaved()); } catch { setItems([]); }
-  }, []);
+  // 저장소를 직접 구독한다. 저장·삭제가 일어나면 알아서 다시 그려진다.
+  const raw = useSyncExternalStore(subscribe, getRawSnapshot, getServerSnapshot);
 
-  useEffect(() => { reload(); }, [reload, refreshKey]);
-  useEffect(() => { onCountChange?.(items.length); }, [items.length, onCountChange]);
+  const items = useMemo<SavedBirthday[]>(() => {
+    try {
+      const parsed = JSON.parse(raw) as SavedBirthday[];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }, [raw]);
 
   // 생신표의 핵심은 "누가 제일 먼저인가"다. 다가오는 순으로 정렬한다.
   // 날짜를 계산할 수 없는 항목은 맨 뒤로 보낸다.
@@ -93,7 +97,7 @@ export default function SavedBirthdays({ onLoad, refreshKey, onCountChange }: Pr
 
                 <div className="flex items-center gap-3">
                   <button type="button"
-                    onClick={e => { e.stopPropagation(); toggleStar(item.id); reload(); }}
+                    onClick={e => { e.stopPropagation(); toggleStar(item.id); }}
                     className="text-lg shrink-0"
                     aria-label={item.starred ? '즐겨찾기 해제' : '즐겨찾기'}>
                     {item.starred ? '⭐' : '☆'}
@@ -132,7 +136,7 @@ export default function SavedBirthdays({ onLoad, refreshKey, onCountChange }: Pr
                   </div>
 
                   <button type="button"
-                    onClick={e => { e.stopPropagation(); deleteBirthday(item.id); reload(); }}
+                    onClick={e => { e.stopPropagation(); deleteBirthday(item.id); }}
                     className="text-lg shrink-0 opacity-40 hover:opacity-80"
                     aria-label={`${item.label} 삭제`}>
                     ×

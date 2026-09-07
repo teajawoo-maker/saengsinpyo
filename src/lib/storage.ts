@@ -32,10 +32,46 @@ function loadAll(): SavedBirthday[] {
   }
 }
 
+/* ────────────────────────────────────────────────────────────
+   화면과 저장소 잇기
+
+   localStorage는 React 바깥의 저장소다. useEffect로 읽어 setState하면
+   불필요한 재렌더가 한 번 더 생기고, 바뀔 때마다 부모가 신호를
+   내려보내야 한다. 구독 방식으로 바꿔 useSyncExternalStore로 읽는다.
+   ──────────────────────────────────────────────────────────── */
+
+type Listener = () => void;
+let listeners: Listener[] = [];
+
+export function subscribe(listener: Listener): () => void {
+  listeners = [...listeners, listener];
+  return () => { listeners = listeners.filter(l => l !== listener); };
+}
+
+/**
+ * 저장된 원본 문자열.
+ * useSyncExternalStore는 값이 같으면 같은 참조여야 다시 그리지 않는다.
+ * 배열을 새로 만들어 돌려주면 매번 달라지므로 문자열을 그대로 준다.
+ */
+export function getRawSnapshot(): string {
+  try {
+    return localStorage.getItem(KEY) ?? '[]';
+  } catch {
+    return '[]';
+  }
+}
+
+/** 서버에서는 저장소가 없다. 빈 목록으로 그린다. */
+export function getServerSnapshot(): string {
+  return '[]';
+}
+
 function saveAll(items: SavedBirthday[]): void {
   try {
     localStorage.setItem(KEY, JSON.stringify(items));
   } catch { /* 저장공간 부족 등 */ }
+  // 저장에 실패했더라도 화면은 실제 저장소 상태를 다시 읽어야 한다
+  for (const listener of listeners) listener();
 }
 
 /**

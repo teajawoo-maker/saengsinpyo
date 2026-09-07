@@ -6,7 +6,7 @@ import { downloadBackup, importBackup } from '@/lib/storage';
 interface Props {
   /** 저장된 항목 수. 0이면 내보낼 게 없다. */
   count: number;
-  onImported: () => void;
+
 }
 
 /**
@@ -14,7 +14,7 @@ interface Props {
  * localStorage에만 있는 값이라 기기를 바꾸거나 브라우저 데이터를 지우면
  * 전부 사라진다. 파일로 빼두고 되돌릴 수 있게 한다.
  */
-export default function BackupSection({ count, onImported }: Props) {
+export default function BackupSection({ count }: Props) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
@@ -39,11 +39,11 @@ export default function BackupSection({ count, onImported }: Props) {
       } else {
         show(`${result.added}명 불러왔어요!${result.skipped ? ` (${result.skipped}개는 이미 있어서 건너뜀)` : ''}`);
       }
-      onImported();
+
     } catch {
       show('파일을 읽지 못했어요.', true);
     }
-  }, [show, onImported]);
+  }, [show]);
 
   return (
     <div className="w-full max-w-md mx-auto px-4 mb-4">

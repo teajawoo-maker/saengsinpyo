@@ -21,7 +21,7 @@ export default function BumonimPage() {
             부모님·조부모님 음력 생신<br />양력으로 바로 확인하기
           </h1>
           <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-            "어머니 생신이 음력 몇 월 며칠인데, 올해 양력으로 언제지?" — 이런 고민, 이제 2초 만에 해결해 보세요.
+            &ldquo;어머니 생신이 음력 몇 월 며칠인데, 올해 양력으로 언제지?&rdquo; — 이런 고민, 이제 2초 만에 해결해 보세요.
           </p>
         </header>
 
