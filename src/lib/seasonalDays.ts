@@ -1,4 +1,5 @@
 import KoreanLunarCalendar from 'korean-lunar-calendar';
+import { getDongji } from '@/lib/solstice';
 
 export interface SeasonalDay {
   name: string;
@@ -18,18 +19,9 @@ function lunarToSolar(year: number, month: number, day: number, isLeap = false):
   }
 }
 
-// 동지: 태양 황경 270도, 양력로는 대략 12/21~22
-function getDongji(year: number): Date {
-  // 근사식: 동지는 12월 22일 근처 (간단 근사)
-  // 정확하게는 천문 계산이 필요하지만 표시용으로 충분
-  const base = new Date(year, 11, 22);
-  return base;
-}
-
-// 한식: 동지로부터 105일째
+// 한식: 전해 동지로부터 105일째
 function getHansik(year: number): Date {
-  const dongji = getDongji(year - 1); // 전년도 동지
-  const hansik = new Date(dongji);
+  const hansik = new Date(getDongji(year - 1));
   hansik.setDate(hansik.getDate() + 105);
   return hansik;
 }
@@ -47,7 +39,7 @@ export function getSeasonalDaysForYear(year: number): SeasonalDay[] {
   add('단오', '🌿', lunarToSolar(year, 5, 5), '음력 5월 5일 · 수릿날');
   add('칠석', '⭐', lunarToSolar(year, 7, 7), '음력 7월 7일 · 견우와 직녀');
   add('추석', '🌾', lunarToSolar(year, 8, 15), '음력 8월 15일 · 한가위');
-  add('동지', '🌑', getDongji(year), '양력 12월 22일경 · 팥죽 먹는 날');
+  add('동지', '🌑', getDongji(year), '해마다 12월 21~22일 · 팥죽 먹는 날');
 
   // 양력 기반
   add('한식', '🔥', getHansik(year), '동지로부터 105일째 · 성묘하는 날');
