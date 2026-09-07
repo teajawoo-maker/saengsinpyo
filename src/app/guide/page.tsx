@@ -1,48 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { GUIDES, guidePath } from '@/lib/guides';
 
 export const metadata: Metadata = {
   title: '음력 생일 가이드 | 우리집 생신표',
   description: '윤달 생일 계산법, 음력 30일 없는 해 처리, 부모님 음력 생신 양력 변환 방법을 알아보세요.',
 };
 
-const guides = [
-  {
-    href: '/guide/yundal-saengil',
-    emoji: '🌙',
-    title: '윤달 생일, 어떻게 계산하나요?',
-    desc: '윤달이 없는 해에 생신을 언제 챙겨야 할지 헷갈리는 분들을 위한 완벽 가이드',
-    tags: ['윤달', '음력 생일', '생신'],
-  },
-  {
-    href: '/guide/eumlryeok-30il',
-    emoji: '📅',
-    title: '음력 30일이 없는 해에는?',
-    desc: '음력 달마다 날수가 다른 이유와, 30일 생일을 어떻게 처리하는지 알아봅니다',
-    tags: ['음력 30일', '소월', '대월'],
-  },
-  {
-    href: '/guide/bumonim-saengsin',
-    emoji: '🎂',
-    title: '부모님·조부모님 음력 생신 양력 변환',
-    desc: '매년 달라지는 부모님 음력 생신을 올해 양력 날짜로 정확하게 확인하는 방법',
-    tags: ['부모님 생신', '양력 변환', '음력 달력'],
-  },
-  {
-    href: '/guide/hwangap-chilsun',
-    emoji: '🎉',
-    title: '환갑은 몇 살인가요?',
-    desc: '만 나이와 세는나이가 달라 헷갈리는 환갑·칠순·팔순 기준과 잔치 시기를 정리했어요',
-    tags: ['환갑 나이', '칠순', '팔순', '진갑'],
-  },
-  {
-    href: '/guide/tti-ganji',
-    emoji: '🐴',
-    title: '내 띠는 무엇일까요?',
-    desc: '띠가 바뀌는 날은 설날이에요. 1~2월생이 헷갈리는 이유와 연도별 띠 표',
-    tags: ['띠 계산', '간지', '육십갑자'],
-  },
-];
 
 export default function GuidePage() {
   return (
@@ -61,15 +25,15 @@ export default function GuidePage() {
         </p>
 
         <div className="space-y-4">
-          {guides.map(g => (
-            <Link key={g.href} href={g.href}
+          {GUIDES.map(g => (
+            <Link key={g.slug} href={guidePath(g)}
               className="block rounded-2xl p-5 transition-all"
               style={{ background: 'var(--bg-card)', border: '1px solid var(--border-light)', boxShadow: 'var(--shadow)' }}>
               <div className="flex gap-4 items-start">
                 <span className="text-3xl shrink-0">{g.emoji}</span>
                 <div>
                   <h2 className="text-base font-bold mb-1" style={{ color: 'var(--text-primary)' }}>{g.title}</h2>
-                  <p className="text-sm leading-relaxed mb-3" style={{ color: 'var(--text-secondary)' }}>{g.desc}</p>
+                  <p className="text-sm leading-relaxed mb-3" style={{ color: 'var(--text-secondary)' }}>{g.description}</p>
                   <div className="flex flex-wrap gap-1.5">
                     {g.tags.map(t => (
                       <span key={t} className="text-xs px-2 py-0.5 rounded-full"

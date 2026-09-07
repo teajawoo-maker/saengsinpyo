@@ -1,49 +1,20 @@
 import { NextResponse } from 'next/server';
 import { BASE_URL } from '@/lib/siteConfig';
-
-const GUIDES = [
-  {
-    title: '윤달 생일 계산법 — 윤달이 없는 해에는 어떻게 챙기나요?',
-    link: `${BASE_URL}/guide/yundal-saengil`,
-    description:
-      '윤달 생신은 매년 날짜가 있는 게 아니라서 헷갈리는 경우가 많아요. 정확한 규칙과 가족 관습에 맞는 계산법을 알아봅니다.',
-  },
-  {
-    title: '음력 30일이 없는 해에는 생신을 언제 챙기나요?',
-    link: `${BASE_URL}/guide/eumlryeok-30il`,
-    description:
-      '음력 달에는 29일까지만 있는 경우가 있어요. 대월과 소월의 차이, 음력 30일 생일 처리 방법 안내.',
-  },
-  {
-    title: '부모님·조부모님 음력 생신 양력으로 바로 확인하기',
-    link: `${BASE_URL}/guide/bumonim-saengsin`,
-    description:
-      '어머니 생신이 음력 몇 월 며칠인데, 올해 양력으로 언제지? 이런 고민을 2초 만에 해결하세요.',
-  },
-  {
-    title: '환갑은 몇 살인가요? — 환갑·칠순·팔순 나이 정리',
-    link: `${BASE_URL}/guide/hwangap-chilsun`,
-    description:
-      '만 나이와 세는나이가 달라 헷갈리는 환갑·진갑·칠순·팔순·구순 기준과 잔치 시기를 정리했습니다.',
-  },
-  {
-    title: '내 띠는 무엇일까요? — 띠가 바뀌는 날은 설날입니다',
-    link: `${BASE_URL}/guide/tti-ganji`,
-    description:
-      '양력 1~2월에 태어나면 띠가 앞 해가 될 수 있어요. 간지의 뜻과 연도별 띠 표를 확인하세요.',
-  },
-];
+import { GUIDES, guidePath } from '@/lib/guides';
 
 export async function GET() {
-  const items = GUIDES.map(
-    (g) => `
+  // 가이드 목록에서 자동으로 채운다. 글을 추가할 때 RSS에
+  // 넣는 것을 빠뜨리지 않도록.
+  const items = GUIDES.map(guide => {
+    const link = `${BASE_URL}${guidePath(guide)}`;
+    return `
   <item>
-    <title><![CDATA[${g.title}]]></title>
-    <link>${g.link}</link>
-    <description><![CDATA[${g.description}]]></description>
-    <guid isPermaLink="true">${g.link}</guid>
-  </item>`
-  ).join('');
+    <title><![CDATA[${guide.title}]]></title>
+    <link>${link}</link>
+    <description><![CDATA[${guide.rssDescription}]]></description>
+    <guid isPermaLink="true">${link}</guid>
+  </item>`;
+  }).join('');
 
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0"

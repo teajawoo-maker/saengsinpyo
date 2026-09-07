@@ -1,53 +1,34 @@
 import { MetadataRoute } from 'next';
 import { BASE_URL } from '@/lib/siteConfig';
+import { GUIDES, guidePath } from '@/lib/guides';
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const lastModified = new Date();
+
   return [
     {
       url: BASE_URL,
-      lastModified: new Date(),
+      lastModified,
       changeFrequency: 'monthly',
       priority: 1,
     },
     {
       url: `${BASE_URL}/guide`,
-      lastModified: new Date(),
+      lastModified,
       changeFrequency: 'monthly',
       priority: 0.8,
     },
-    {
-      url: `${BASE_URL}/guide/yundal-saengil`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
+    // 가이드 글은 목록에서 자동으로 채운다. 글을 추가할 때
+    // 사이트맵에 넣는 것을 빠뜨리지 않도록.
+    ...GUIDES.map(guide => ({
+      url: `${BASE_URL}${guidePath(guide)}`,
+      lastModified,
+      changeFrequency: 'monthly' as const,
       priority: 0.7,
-    },
-    {
-      url: `${BASE_URL}/guide/eumlryeok-30il`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${BASE_URL}/guide/bumonim-saengsin`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${BASE_URL}/guide/hwangap-chilsun`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${BASE_URL}/guide/tti-ganji`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
+    })),
     {
       url: `${BASE_URL}/about`,
-      lastModified: new Date(),
+      lastModified,
       changeFrequency: 'yearly',
       priority: 0.5,
     },
