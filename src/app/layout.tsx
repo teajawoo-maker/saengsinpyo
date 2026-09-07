@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
-import Script from 'next/script';
 import { BASE_URL, NAVER_SITE_VERIFICATION } from '@/lib/siteConfig';
 import { ADSENSE_CLIENT, isAdsenseEnabled } from '@/lib/adsense';
 import BottomNav from '@/components/BottomNav';
@@ -88,6 +87,21 @@ export default function RootLayout({
       <head>
         {/* 네이버 서치어드바이저 소유확인 */}
         <meta name="naver-site-verification" content={NAVER_SITE_VERIFICATION} />
+
+        {/*
+          애드센스 스크립트.
+          next/script의 lazyOnload로 두면 자바스크립트가 나중에 삽입해서
+          원본 HTML에는 태그가 남지 않는다. 애드센스 크롤러는 원본 HTML을
+          읽으므로 소유권 확인에 실패한다. 그래서 head에 직접 넣는다.
+          async라 첫 화면 그리는 것을 막지는 않는다.
+        */}
+        {isAdsenseEnabled && (
+          <script
+            async
+            crossOrigin="anonymous"
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+          />
+        )}
         <link rel="alternate" type="application/rss+xml" title="우리집 생신표 RSS" href={`${BASE_URL}/feed.xml`} />
         <script
           type="application/ld+json"
@@ -98,18 +112,6 @@ export default function RootLayout({
         {children}
         <BottomNav />
 
-        {/*
-          애드센스 스크립트. 설정이 없으면 아예 넣지 않는다.
-          lazyOnload로 두어 첫 화면이 그려지는 속도를 늦추지 않는다.
-        */}
-        {isAdsenseEnabled && (
-          <Script
-            id="adsbygoogle-init"
-            strategy="lazyOnload"
-            crossOrigin="anonymous"
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
-          />
-        )}
       </body>
     </html>
   );
