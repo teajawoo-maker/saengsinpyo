@@ -64,19 +64,6 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebApplication',
-  name: '우리집 생신표',
-  description: '음력 생일을 양력으로 변환해 드려요. 부모님·조부모님 음력 생신을 올해·내년 날짜로 바로 확인하세요.',
-  url: BASE_URL,
-  applicationCategory: 'UtilityApplication',
-  operatingSystem: 'Web',
-  inLanguage: 'ko-KR',
-  offers: { '@type': 'Offer', price: '0', priceCurrency: 'KRW' },
-  author: { '@type': 'Organization', name: '우리집 생신표' },
-};
-
 export default function RootLayout({
   children,
 }: {
@@ -108,10 +95,6 @@ export default function RootLayout({
           </>
         )}
         <link rel="alternate" type="application/rss+xml" title="우리집 생신표 RSS" href={`${BASE_URL}/feed.xml`} />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
       </head>
       <body>
         {children}

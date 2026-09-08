@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { GUIDES, guidePath } from '@/lib/guides';
+import JsonLd from '@/components/JsonLd';
+import { guideListJsonLd, breadcrumbJsonLd } from '@/lib/jsonLd';
 
 export const metadata: Metadata = {
   title: '음력 생일 가이드 | 우리집 생신표',
@@ -11,6 +13,16 @@ export const metadata: Metadata = {
 
 export default function GuidePage() {
   return (
+    <>
+      <JsonLd
+        data={[
+          guideListJsonLd(GUIDES),
+          breadcrumbJsonLd([
+            { name: '우리집 생신표', path: '/' },
+            { name: '음력 생일 가이드', path: '/guide' },
+          ]),
+        ]}
+      />
     <main className="pb-24" style={{ background: 'var(--bg)', minHeight: '100dvh' }}>
       <div className="max-w-md mx-auto px-4 py-10">
         <Link href="/" className="inline-flex items-center gap-1 text-sm mb-8"
@@ -50,5 +62,6 @@ export default function GuidePage() {
         </div>
       </div>
     </main>
+    </>
   );
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import GuideJsonLd from '@/components/GuideJsonLd';
 import AdSlot from '@/components/AdSlot';
 import { AD_SLOTS } from '@/lib/adsense';
 
@@ -12,6 +13,8 @@ export const metadata: Metadata = {
 
 export default function Eumlryeok30ilPage() {
   return (
+    <>
+      <GuideJsonLd slug="eumlryeok-30il" />
     <main className="pb-24" style={{ background: 'var(--bg)', minHeight: '100dvh' }}>
       <article className="max-w-md mx-auto px-4 py-10">
         <Link href="/guide" className="inline-flex items-center gap-1 text-sm mb-8" style={{ color: 'var(--text-muted)' }}>
@@ -101,5 +104,6 @@ export default function Eumlryeok30ilPage() {
         </div>
       </article>
     </main>
+    </>
   );
 }

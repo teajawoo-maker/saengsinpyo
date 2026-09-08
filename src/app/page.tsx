@@ -1,4 +1,6 @@
 import HomeContent from '@/components/HomeContent';
+import JsonLd from '@/components/JsonLd';
+import { webApplicationJsonLd } from '@/lib/jsonLd';
 
 /**
  * 하루에 한 번 페이지를 다시 만든다.
@@ -13,5 +15,10 @@ import HomeContent from '@/components/HomeContent';
 export const revalidate = 86400;
 
 export default function HomePage() {
-  return <HomeContent />;
+  return (
+    <>
+      <JsonLd data={webApplicationJsonLd()} />
+      <HomeContent />
+    </>
+  );
 }
