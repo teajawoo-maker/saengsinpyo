@@ -5,6 +5,7 @@ import { GUIDES, guidePath } from '@/lib/guides';
 export const metadata: Metadata = {
   title: '음력 생일 가이드 | 우리집 생신표',
   description: '윤달 생일 계산법, 음력 30일 없는 해 처리, 부모님 음력 생신 양력 변환 방법을 알아보세요.',
+  alternates: { canonical: '/guide' },
 };
 
 

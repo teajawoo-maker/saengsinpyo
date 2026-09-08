@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: '음력 30일 없는 해 생일 계산 | 우리집 생신표',
   description: '음력 달에는 29일까지만 있는 경우가 있어요. 음력 30일 생일이 있는 분들을 위한 처리 방법과 가족 관습 선택 가이드.',
   keywords: ['음력 30일', '음력 30일 없는 해', '소월 대월', '음력 생일 29일', '음력 달 날수'],
+  alternates: { canonical: '/guide/eumlryeok-30il' },
 };
 
 export default function Eumlryeok30ilPage() {

@@ -4,6 +4,7 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: '계산 기준 안내 | 우리집 생신표',
   description: '우리집 생신표의 음력 양력 변환 기준, 한국천문연구원 데이터 사용 방식, 윤달·30일 처리 원칙을 상세히 설명합니다.',
+  alternates: { canonical: '/about' },
 };
 
 export default function AboutPage() {

@@ -2,14 +2,30 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import AdSlot from '@/components/AdSlot';
 import { AD_SLOTS } from '@/lib/adsense';
+import { getLeapMonths } from '@/lib/lunarConverter';
 
 export const metadata: Metadata = {
   title: '윤달 생일 계산법 | 우리집 생신표',
   description: '윤달 생일은 어떻게 계산할까요? 윤달이 없는 해에 생신을 언제 챙겨야 하는지, 평달로 대체하는 방법과 가족 관습 선택법을 알아봅니다.',
   keywords: ['윤달 생일', '윤달 생신', '음력 윤달 양력 변환', '윤달 없는 해 생일', '음력 생일 계산'],
+  alternates: { canonical: '/guide/yundal-saengil' },
 };
 
+/**
+ * 하루에 한 번 페이지를 다시 만든다.
+ * 윤달 표가 올해를 기준으로 앞으로 12년을 보여주므로 해가 바뀌면 따라가야 한다.
+ */
+export const revalidate = 86400;
+
 export default function YundalPage() {
+  const THIS_YEAR = new Date().getFullYear();
+  const upcoming = getLeapMonths(THIS_YEAR, THIS_YEAR + 11);
+
+  // 윤달을 설명할 예시는 이미 지나간 가장 최근 윤달을 쓴다.
+  // 특정 연도를 글에 박아 두면 해가 지나면서 틀린 이야기가 된다.
+  const past = getLeapMonths(THIS_YEAR - 4, THIS_YEAR);
+  const example = past[past.length - 1];
+
   return (
     <main className="pb-24" style={{ background: 'var(--bg)', minHeight: '100dvh' }}>
       <article className="max-w-md mx-auto px-4 py-10">
@@ -30,7 +46,7 @@ export default function YundalPage() {
         <div className="space-y-6">
           <Section title="윤달이 뭔가요?">
             <p>음력은 달의 움직임을 기준으로 하기 때문에, 양력보다 1년에 약 11일 짧아요. 이 차이를 맞추기 위해 약 2~3년마다 한 달을 더 끼워 넣는데, 이 달을 <strong>윤달</strong>이라고 합니다.</p>
-            <p className="mt-2">예를 들어 2023년에는 윤4월이 있어서, 음력 4월이 두 번 반복됐어요. 윤달은 어느 달이 될지 해마다 다르고, 없는 해도 많습니다.</p>
+            <p className="mt-2">{example && <>예를 들어 {example.year}년에는 윤{example.month}월이 있어서, 음력 {example.month}월이 두 번 반복됐어요. </>}윤달은 어느 달이 될지 해마다 다르고, 없는 해도 많습니다.</p>
           </Section>
 
           <Section title="윤달 생신이 있는데, 그 윤달이 없는 해에는?">
@@ -59,7 +75,7 @@ export default function YundalPage() {
             <p className="text-sm mt-3" style={{ color: 'var(--text-muted)' }}>가족 어르신께 관습을 확인 후 설정하시면 매년 정확하게 안내받을 수 있어요.</p>
           </Section>
 
-          <Section title="언제 윤달이 있나요? (2024~2030)">
+          <Section title={`언제 윤달이 있나요? (${THIS_YEAR}~${THIS_YEAR + 11})`}>
             <div className="overflow-x-auto" tabIndex={0} role="region" aria-label="윤달이 있는 해 표">
               <table className="w-full text-sm">
                 <thead>
@@ -69,14 +85,10 @@ export default function YundalPage() {
                   </tr>
                 </thead>
                 <tbody className="space-y-1">
-                  {[
-                    ['2025년', '윤6월'],
-                    ['2028년', '윤5월'],
-                    ['2031년', '윤3월'],
-                  ].map(([year, month]) => (
+                  {upcoming.map(({ year, month }) => (
                     <tr key={year} style={{ borderBottom: '1px solid var(--border-light)' }}>
-                      <td className="py-2 pr-4 font-medium" style={{ color: 'var(--text-primary)' }}>{year}</td>
-                      <td className="py-2" style={{ color: 'var(--text-secondary)' }}>{month}</td>
+                      <td className="py-2 pr-4 font-medium" style={{ color: 'var(--text-primary)' }}>{year}년</td>
+                      <td className="py-2" style={{ color: 'var(--text-secondary)' }}>윤{month}월</td>
                     </tr>
                   ))}
                 </tbody>

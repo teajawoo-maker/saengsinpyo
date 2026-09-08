@@ -2,14 +2,29 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import AdSlot from '@/components/AdSlot';
 import { AD_SLOTS } from '@/lib/adsense';
+import { getSolarForYears } from '@/lib/lunarConverter';
 
 export const metadata: Metadata = {
   title: '부모님·조부모님 음력 생신 양력 변환 | 우리집 생신표',
   description: '부모님, 할머니, 할아버지의 음력 생신을 올해 양력 날짜로 정확하게 변환하는 방법. 매년 달라지는 음력 생일을 쉽게 확인하세요.',
   keywords: ['부모님 생신', '할머니 생신 양력', '할아버지 음력 생신', '음력 양력 변환', '어머니 생신 날짜'],
+  alternates: { canonical: '/guide/bumonim-saengsin' },
 };
 
+/**
+ * 하루에 한 번 페이지를 다시 만든다.
+ * 예시로 보여주는 양력 날짜가 올해부터 3년치라 해가 바뀌면 따라가야 한다.
+ */
+export const revalidate = 86400;
+
 export default function BumonimPage() {
+  // 날짜를 글에 박아 두면 해가 지나면서 지난 이야기가 된다. 매번 계산한다.
+  const THIS_YEAR = new Date().getFullYear();
+  const examples = getSolarForYears(
+    { month: 9, day: 15, leapStatus: 'regular', shortMonthFallback: 'last', leapFallback: 'regular' },
+    [THIS_YEAR, THIS_YEAR + 1, THIS_YEAR + 2]
+  );
+
   return (
     <main className="pb-24" style={{ background: 'var(--bg)', minHeight: '100dvh' }}>
       <article className="max-w-md mx-auto px-4 py-10">
@@ -34,9 +49,9 @@ export default function BumonimPage() {
               <p>음력은 달의 움직임을 기준으로 하기 때문에 양력보다 약 10~11일 짧습니다. 그래서 같은 음력 날짜라도 양력으로 환산하면 해마다 달라져요.</p>
               <p>예를 들어 <strong>음력 9월 15일</strong>은:</p>
               <ul className="space-y-1 mt-1 ml-2">
-                <li>• 2024년 → 양력 10월 17일</li>
-                <li>• 2025년 → 양력 11월 5일</li>
-                <li>• 2026년 → 양력 10월 25일</li>
+                {examples.map(r => (
+                  <li key={r.year}>• {r.year}년 → 양력 {r.month}월 {r.day}일</li>
+                ))}
               </ul>
               <p className="mt-2">이처럼 매년 10~40일가량 차이가 나서, 달력에서 그냥 찾으려면 상당히 어렵습니다.</p>
             </div>

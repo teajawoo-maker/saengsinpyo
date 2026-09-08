@@ -225,3 +225,26 @@ export function formatDDay(dDay: number): string {
 export function formatDate(r: SolarResult): string {
   return `${r.year}년 ${r.month}월 ${r.day}일 ${r.dayOfWeek}요일`;
 }
+
+/**
+ * 주어진 기간에 윤달이 있는 해와 그 달.
+ *
+ * 윤달 목록을 글에 숫자로 적어 두면 해가 지나면서 조용히 낡는다.
+ * 대신 KASI 데이터를 담은 변환기에 직접 물어서 만든다.
+ * 그 해에 윤n월이 없으면 변환이 실패하므로, 1~12월을 하나씩
+ * 두드려 보고 성공한 달이 곧 그 해의 윤달이다.
+ */
+export function getLeapMonths(
+  fromYear: number,
+  toYear: number
+): { year: number; month: number }[] {
+  const found: { year: number; month: number }[] = [];
+  for (let year = fromYear; year <= toYear; year++) {
+    for (let month = 1; month <= 12; month++) {
+      if (lunarToSolar(year, month, 1, true)) {
+        found.push({ year, month });
+      }
+    }
+  }
+  return found;
+}
