@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 우리집 생신표
 
-## Getting Started
+음력 생일을 양력 날짜로 바꿔 주는 웹사이트입니다.
+**https://www.saengsinpyo.com**
 
-First, run the development server:
+부모님·조부모님 생신이 음력이라 해마다 양력 날짜가 달라집니다.
+"음력 9월 15일이 올해는 며칠이지?"를 매번 달력에서 찾는 대신,
+한 번 넣어 두면 올해와 내년 날짜를 바로 보여 줍니다.
+
+## 할 수 있는 것
+
+- **음력 → 양력** 음력 생신을 넣으면 올해·내년 양력 날짜와 남은 날수
+- **양력 → 음력** 주민등록 생일만 알아도 음력 생신과 띠·간지를 알려 줍니다
+- **윤달·30일 처리** 그 해에 윤달이 없거나 음력 30일이 없을 때 집안 관습에 맞게 선택
+- **환갑·칠순** 만 나이와 함께 환갑·진갑·칠순·희수·팔순·미수·구순·백수를 미리 안내
+- **가족 저장** 여러 사람을 저장해 다가오는 순서대로 정렬 (브라우저에만 저장)
+- **내보내기** 달력 앱에 넣는 `.ics` 파일, 생신표 이미지, 백업 파일
+- **명절·절기** 설날·정월대보름·단오·칠석·추석·동지·한식 날짜
+
+## 계산 기준
+
+음력 변환은 한국천문연구원(KASI) 데이터를 담은
+[`korean-lunar-calendar`](https://www.npmjs.com/package/korean-lunar-calendar)를 씁니다.
+
+절기 중 **동지**만은 표에 없어서 직접 계산합니다. 동지는 태양 황경이 270°가
+되는 순간이라 해마다 12월 21일과 22일 사이를 오갑니다. Meeus의
+*Astronomical Algorithms* 27장을 따라 주기항 24개와 ΔT를 반영했습니다
+([`src/lib/solstice.ts`](src/lib/solstice.ts)). 한식은 동지로부터 105일째입니다.
+
+**간지와 띠는 양력 1월 1일이 아니라 설날에 바뀝니다.** 그래서 양력 1~2월생은
+양력 연도와 음력 연도가 다릅니다 ([`src/lib/ganji.ts`](src/lib/ganji.ts)).
+
+## 개발
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev     # http://localhost:3000
+npm run build   # 프로덕션 빌드
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Next.js 16 (App Router) · TypeScript · Tailwind CSS v4 · Vercel 배포
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 구조
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+  app/          라우팅. guide/ 아래가 가이드 글 8편
+  components/   화면 조각
+  lib/          계산과 데이터
+    lunarConverter.ts  음력↔양력 변환의 중심
+    solstice.ts        동지 계산
+    ganji.ts           간지·띠
+    age.ts             나이와 환갑·칠순
+    guides.ts          가이드 글 목록 (목록·사이트맵·RSS가 모두 여기를 읽음)
+```
 
-## Learn More
+### 알아 둘 점
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **글 하나 추가하면 `src/lib/guides.ts`에만 넣으면 됩니다.** 목록 페이지,
+  사이트맵, RSS, 구조화 데이터가 모두 이 배열을 읽습니다.
+- **연도를 코드에 숫자로 적지 마세요.** 해가 바뀌면 아무도 모르게 낡습니다.
+  올해가 필요하면 컴포넌트 안에서 `new Date().getFullYear()`를 쓰고,
+  그 페이지에 `export const revalidate = 86400`을 두세요. 모듈 바깥에 두면
+  서버가 켜질 때 값이 굳어 다시 만들어도 안 바뀝니다.
+- **저장은 브라우저 안에서만 이뤄집니다.** 서버로 생일을 보내지 않습니다.
