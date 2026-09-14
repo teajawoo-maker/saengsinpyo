@@ -95,6 +95,16 @@ export const GUIDES: Guide[] = [
     updated: '2026-09-07',
   },
   {
+    slug: 'chuseok-beolcho',
+    emoji: '🌕',
+    title: '추석, 언제 무엇을 하나요?',
+    description: '올해 추석과 연휴 날짜, 벌초 시기, 성묘 가는 날, 차례 시간을 한눈에',
+    rssDescription: '추석은 음력 8월 15일이라 해마다 양력 날짜가 달라집니다. 올해 추석과 연휴, 벌초와 성묘 시기, 차례 시간을 정리했습니다.',
+    tags: ['추석 날짜', '벌초 시기', '성묘', '백중'],
+    published: '2026-09-14',
+    updated: '2026-09-14',
+  },
+  {
     slug: 'myeongjeol-jeolgi',
     emoji: '🌾',
     title: '올해 명절·절기는 언제인가요?',

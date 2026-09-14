@@ -87,7 +87,12 @@ export default function FamilyShareModal({ rows, onClose }: Props) {
       const agePart = age !== null ? ` (만 ${age}세${milestone ? ` · ${milestone.name}` : ''})` : '';
       lines.push(`${item.label} — ${nearest.month}월 ${nearest.day}일 ${formatDDay(nearest.dDay)}${agePart}`);
     }
-    lines.push('', BASE_URL);
+    // 링크만 덩그러니 붙이면 받은 사람이 누를 이유가 없다.
+    // 무엇을 할 수 있는 곳인지 한 줄 적어 준다.
+    lines.push('');
+    lines.push('음력 생신은 해마다 양력 날짜가 바뀌어요.');
+    lines.push('우리 가족 것도 만들어 보세요 👇');
+    lines.push(BASE_URL);
     const text = lines.join('\n');
 
     if (navigator.share) {

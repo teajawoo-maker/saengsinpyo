@@ -71,19 +71,29 @@ export default function ShareModal({ result, label, lunarMonth, lunarDay, onClos
     }
   }, [buildImage, saveImage, lunarMonth, lunarDay]);
 
+  /**
+   * 단톡방에 보낼 글.
+   *
+   * 예전에는 날짜만 보내고 "확인했어요"로 끝났다. 받은 사람 입장에서는
+   * 읽을 것만 있고 할 것이 없어서 링크를 누를 이유가 없었다.
+   * 음력 몇 월 며칠인지를 함께 적어 주면 받은 사람도 자기 가족 것을
+   * 바로 넣어 볼 수 있다.
+   */
   const shareText = useCallback(async () => {
+    const lunarLabel = `음력 ${lunarMonth}월 ${lunarDay}일`;
     const lines = [
-      `🎂 ${label || `음력 ${lunarMonth}월 ${lunarDay}일`} 생신`,
+      `🎂 ${label ? `${label} 생신` : '생신'} — ${lunarLabel}`,
+      '',
     ];
     if (thisYear) {
-      lines.push(`올해: ${formatDate(thisYear)}`);
-      lines.push(`D-DAY: ${nearest === thisYear && !thisYear.isPast ? `D-${thisYear.dDay}` : '지났어요'}`);
+      lines.push(`올해 ${formatDate(thisYear)}${nearest === thisYear && !thisYear.isPast ? ` (D-${thisYear.dDay})` : ' (지났어요)'}`);
     }
     if (nextYear) {
-      lines.push(`내년: ${formatDate(nextYear)}`);
+      lines.push(`내년 ${formatDate(nextYear)}`);
     }
     lines.push('');
-    lines.push('우리집 생신표에서 확인했어요');
+    lines.push('음력 생신은 해마다 양력 날짜가 바뀌어요.');
+    lines.push('생년월일만 넣으면 올해 날짜를 찾아줍니다 👇');
     lines.push(BASE_URL);
     const text = lines.join('\n');
 
