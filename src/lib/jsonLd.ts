@@ -33,6 +33,22 @@ export function webApplicationJsonLd() {
   };
 }
 
+/** 계산기 한 개 (백일·49재처럼 도구인 쪽) */
+export function toolJsonLd({ name, description, path }: { name: string; description: string; path: string }) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name,
+    description,
+    url: `${BASE_URL}${path}`,
+    applicationCategory: 'UtilityApplication',
+    operatingSystem: 'Web',
+    inLanguage: 'ko-KR',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'KRW' },
+    publisher: PUBLISHER,
+  };
+}
+
 /** 가이드 글 한 편 */
 export function articleJsonLd(guide: Guide) {
   const url = `${BASE_URL}${guidePath(guide)}`;

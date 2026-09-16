@@ -37,6 +37,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     })),
+    // 날짜 계산기들. 가이드와 달리 도구라서 따로 적는다.
+    {
+      url: `${BASE_URL}/baegil`,
+      lastModified: new Date('2026-09-16'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/sasipgujae`,
+      lastModified: new Date('2026-09-16'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.8,
+    },
     {
       url: `${BASE_URL}/about`,
       lastModified: new Date('2026-09-08'),

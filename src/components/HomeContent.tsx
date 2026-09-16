@@ -96,6 +96,33 @@ export default function HomeContent() {
       {/* 백업 — 저장한 생신이 있을 때만 안내한다 */}
       {savedCount > 0 && <BackupSection count={savedCount} />}
 
+      {/* 다른 날짜 계산기. 어디서도 링크가 없으면 사람도 검색엔진도 못 찾는다 */}
+      <section className="max-w-md mx-auto px-4 pb-6">
+        <h3 className="text-sm font-semibold mb-3" style={{ color: 'var(--text-secondary)' }}>
+          다른 날짜도 세어 드려요
+        </h3>
+        <div className="grid grid-cols-2 gap-3">
+          <Link
+            href="/baegil"
+            className="rounded-2xl p-4 block"
+            style={{ background: 'var(--bg-card)', border: '1px solid var(--border-light)' }}
+          >
+            <span className="text-2xl block mb-1.5" aria-hidden="true">👶</span>
+            <span className="text-sm font-bold block" style={{ color: 'var(--text-primary)' }}>백일·돌 계산</span>
+            <span className="text-xs block mt-0.5" style={{ color: 'var(--text-muted)' }}>50일 · 백일 · 200일 · 첫돌</span>
+          </Link>
+          <Link
+            href="/sasipgujae"
+            className="rounded-2xl p-4 block"
+            style={{ background: 'var(--bg-card)', border: '1px solid var(--border-light)' }}
+          >
+            <span className="text-2xl block mb-1.5" aria-hidden="true">🕯️</span>
+            <span className="text-sm font-bold block" style={{ color: 'var(--text-primary)' }}>49재·삼우제 계산</span>
+            <span className="text-xs block mt-0.5" style={{ color: 'var(--text-muted)' }}>초재부터 49재까지</span>
+          </Link>
+        </div>
+      </section>
+
       {/* 안내 섹션 */}
       <section className="max-w-md mx-auto px-4 pb-6">
         <div className="rounded-2xl p-5" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-light)' }}>
