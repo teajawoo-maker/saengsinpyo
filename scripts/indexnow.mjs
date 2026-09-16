@@ -6,8 +6,12 @@
  * 네이버가 여기에 참여한다. 한 곳에 보내면 참여하는 다른 곳
  * (빙 등)에도 함께 전달된다. 구글은 참여하지 않아 따로 기다려야 한다.
  *
- *   node scripts/indexnow.mjs            사이트맵의 모든 주소
- *   node scripts/indexnow.mjs /guide/x   특정 주소만
+ *   npm run indexnow               사이트맵의 모든 주소
+ *   npm run indexnow guide/tti-ganji   특정 주소만
+ *
+ * 윈도우 Git Bash는 /로 시작하는 인자를 윈도우 경로로 바꿔 버린다.
+ * (/guide/x → C:/Program Files/Git/guide/x) 그래서 앞의 /는 빼고 적는다.
+ * 실수로 붙여도 아래에서 알아보고 되돌린다.
  */
 
 const HOST = 'www.saengsinpyo.com';
@@ -21,11 +25,33 @@ async function urlsFromSitemap() {
   return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1]);
 }
 
+/**
+ * 사람이 적은 인자 하나를 온전한 주소로 만든다.
+ * Git Bash가 앞의 /를 윈도우 경로로 바꿔 놓은 것도 되돌린다.
+ */
+function toUrl(arg) {
+  if (arg.startsWith('http')) return arg;
+  // C:/Program Files/Git/guide/x 처럼 바뀐 것에서 실제 경로만 뽑는다
+  const mangled = arg.match(/^[A-Za-z]:[/\\].*?[/\\]Git[/\\](.*)$/);
+  const path = mangled ? mangled[1] : arg;
+  return `https://${HOST}/${path.replace(/^\/+/, '')}`;
+}
+
 async function main() {
   const args = process.argv.slice(2);
-  const urlList = args.length
-    ? args.map(p => (p.startsWith('http') ? p : `https://${HOST}${p}`))
-    : await urlsFromSitemap();
+  const known = await urlsFromSitemap();
+  const urlList = args.length ? args.map(toUrl) : known;
+
+  // 사이트맵에 없는 주소를 보내면 검색엔진이 통째로 거절한다.
+  // 오타나 경로가 망가진 것을 여기서 먼저 잡는다.
+  const unknown = urlList.filter(u => !known.includes(u));
+  if (unknown.length) {
+    console.error('사이트맵에 없는 주소입니다. 배포됐는지, 오타가 없는지 확인하세요:');
+    for (const u of unknown) console.error('  ', u);
+    console.error('\n사이트맵에 있는 주소:');
+    for (const u of known) console.error('  ', u);
+    process.exit(1);
+  }
 
   // 키 파일이 실제로 열려야 검색엔진이 우리를 믿는다. 먼저 확인한다.
   const keyUrl = `https://${HOST}/${KEY}.txt`;
