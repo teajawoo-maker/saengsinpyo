@@ -75,6 +75,16 @@ export const GUIDES: Guide[] = [
     updated: '2026-09-08',
   },
   {
+    slug: 'tti-naiipyo',
+    emoji: '📊',
+    title: '올해 띠별 나이표',
+    description: '띠만 알면 몇 살인지 바로. 열두 띠의 태어난 해와 만 나이·세는나이를 한눈에',
+    rssDescription: '쥐띠부터 돼지띠까지, 올해 기준 태어난 해와 만 나이·세는나이를 정리했습니다. 설날 전 출생이면 띠가 달라지는 점도 함께 안내합니다.',
+    tags: ['띠별 나이', '만 나이', '세는나이', '나이표'],
+    published: '2026-09-16',
+    updated: '2026-09-16',
+  },
+  {
     slug: 'eumlryeok-yanglyeok',
     emoji: '🌗',
     title: '음력 생일은 왜 해마다 날짜가 달라지나요?',

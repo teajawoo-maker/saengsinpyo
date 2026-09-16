@@ -82,7 +82,10 @@ export default function ShareModal({ result, label, lunarMonth, lunarDay, onClos
   const shareText = useCallback(async () => {
     const lunarLabel = `음력 ${lunarMonth}월 ${lunarDay}일`;
     const lines = [
-      `🎂 ${label ? `${label} 생신` : '생신'} — ${lunarLabel}`,
+      // 호칭을 넣었으면 "어머니 생신 — 음력 12월 24일",
+      // 안 넣었으면 "음력 12월 24일 생신". 호칭 없이 앞의 꼴을 쓰면
+      // "생신 — 음력 12월 24일"이 되어 말이 어색해진다.
+      label ? `🎂 ${label} 생신 — ${lunarLabel}` : `🎂 ${lunarLabel} 생신`,
       '',
     ];
     if (thisYear) {
