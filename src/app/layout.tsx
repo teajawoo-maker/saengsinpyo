@@ -74,6 +74,8 @@ export default function RootLayout({
       <head>
         {/* 네이버 서치어드바이저 소유확인 */}
         <meta name="naver-site-verification" content={NAVER_SITE_VERIFICATION} />
+        {/* 빙 웹마스터도구 소유확인. ChatGPT 검색·Copilot이 빙 색인을 쓴다. 지우면 확인이 풀린다 */}
+        <meta name="msvalidate.01" content="0451F4D77459E885AAAE2DB1A8DDE96A" />
 
         {/*
           애드센스 스크립트.
