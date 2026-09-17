@@ -1,16 +1,19 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/pageMeta';
 import Link from 'next/link';
 import GuideJsonLd from '@/components/GuideJsonLd';
 import AdSlot from '@/components/AdSlot';
 import { AD_SLOTS } from '@/lib/adsense';
 import { getLeapMonths } from '@/lib/lunarConverter';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: '윤달 생일 계산법 | 우리집 생신표',
   description: '윤달 생일은 어떻게 계산할까요? 윤달이 없는 해에 생신을 언제 챙겨야 하는지, 평달로 대체하는 방법과 가족 관습 선택법을 알아봅니다.',
   keywords: ['윤달 생일', '윤달 생신', '음력 윤달 양력 변환', '윤달 없는 해 생일', '음력 생일 계산'],
-  alternates: { canonical: '/guide/yundal-saengil' },
-};
+  path: '/guide/yundal-saengil',
+  image: 'guide-yundal-saengil.png',
+  imageAlt: '윤달 생일 계산법',
+});
 
 /**
  * 하루에 한 번 페이지를 다시 만든다.

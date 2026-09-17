@@ -1,15 +1,18 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/pageMeta';
 import Link from 'next/link';
 import GuideJsonLd from '@/components/GuideJsonLd';
 import AdSlot from '@/components/AdSlot';
 import { AD_SLOTS } from '@/lib/adsense';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: '제사·기일 날짜 계산하는 법 | 우리집 생신표',
   description: '음력 기일을 올해 양력 날짜로 찾는 방법. 제사는 돌아가신 전날 지내는지, 윤달에 돌아가신 경우는 어떻게 하는지 정리했습니다.',
   keywords: ['제사 날짜 계산', '기일 계산', '음력 기일 양력', '제사 전날', '기제사 날짜', '윤달 제사', '음력 제사'],
-  alternates: { canonical: '/guide/jesa-gil' },
-};
+  path: '/guide/jesa-gil',
+  image: 'guide-jesa-gil.png',
+  imageAlt: '제사·기일 날짜 계산하는 법',
+});
 
 export default function JesaPage() {
   return (

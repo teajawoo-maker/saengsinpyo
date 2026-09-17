@@ -64,7 +64,8 @@ export function articleJsonLd(guide: Guide) {
     dateModified: guide.updated,
     inLanguage: 'ko-KR',
     keywords: guide.tags.join(', '),
-    image: `${BASE_URL}/og-image-v2.png`,
+    // 글마다 따로 만든 공유 이미지를 쓴다 (scripts/og-images.mjs)
+    image: `${BASE_URL}/og/guide-${guide.slug}.png`,
     author: PUBLISHER,
     publisher: PUBLISHER,
   };

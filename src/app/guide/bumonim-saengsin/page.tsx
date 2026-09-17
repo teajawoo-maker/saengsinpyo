@@ -1,16 +1,19 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/pageMeta';
 import Link from 'next/link';
 import GuideJsonLd from '@/components/GuideJsonLd';
 import AdSlot from '@/components/AdSlot';
 import { AD_SLOTS } from '@/lib/adsense';
 import { getSolarForYears } from '@/lib/lunarConverter';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: '부모님·조부모님 음력 생신 양력 변환 | 우리집 생신표',
   description: '부모님, 할머니, 할아버지의 음력 생신을 올해 양력 날짜로 정확하게 변환하는 방법. 매년 달라지는 음력 생일을 쉽게 확인하세요.',
   keywords: ['부모님 생신', '할머니 생신 양력', '할아버지 음력 생신', '음력 양력 변환', '어머니 생신 날짜'],
-  alternates: { canonical: '/guide/bumonim-saengsin' },
-};
+  path: '/guide/bumonim-saengsin',
+  image: 'guide-bumonim-saengsin.png',
+  imageAlt: '부모님·조부모님 음력 생신 양력 변환',
+});
 
 /**
  * 하루에 한 번 페이지를 다시 만든다.

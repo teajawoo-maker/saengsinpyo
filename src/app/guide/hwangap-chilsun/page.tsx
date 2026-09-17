@@ -1,15 +1,18 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/pageMeta';
 import Link from 'next/link';
 import GuideJsonLd from '@/components/GuideJsonLd';
 import AdSlot from '@/components/AdSlot';
 import { AD_SLOTS } from '@/lib/adsense';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: '환갑·칠순·팔순 나이 계산 | 우리집 생신표',
   description: '환갑은 몇 살일까요? 만 나이와 세는나이가 달라 헷갈리는 환갑·진갑·칠순·팔순·구순 나이를 정리했습니다. 잔치를 언제 해야 하는지도 알려드려요.',
   keywords: ['환갑 나이', '칠순 나이', '팔순 나이', '환갑 몇살', '칠순 잔치 나이', '진갑', '구순', '고희', '세는나이 만나이'],
-  alternates: { canonical: '/guide/hwangap-chilsun' },
-};
+  path: '/guide/hwangap-chilsun',
+  image: 'guide-hwangap-chilsun.png',
+  imageAlt: '환갑·칠순·팔순 나이 계산',
+});
 
 const MILESTONES = [
   { age: 60, name: '환갑(還甲)', also: '회갑', desc: '태어난 해의 간지가 한 바퀴 돌아 다시 온 해' },

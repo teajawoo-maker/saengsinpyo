@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/pageMeta';
 import Link from 'next/link';
 import AdSlot from '@/components/AdSlot';
 import GuideJsonLd from '@/components/GuideJsonLd';
@@ -6,12 +7,14 @@ import { AD_SLOTS } from '@/lib/adsense';
 import { getGanji } from '@/lib/ganji';
 import { koreanAge, getMilestone } from '@/lib/age';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: '띠별 나이표 | 우리집 생신표',
   description: '올해 기준 띠별 나이를 한눈에. 쥐띠부터 돼지띠까지 태어난 해와 만 나이·세는나이를 정리했습니다. 설날 전에 태어나면 띠가 달라지는 점도 함께 안내합니다.',
   keywords: ['띠별 나이', '띠 나이표', '올해 나이', '만 나이 계산', '세는나이', '무슨 띠', '몇 살', '띠 계산'],
-  alternates: { canonical: '/guide/tti-naiipyo' },
-};
+  path: '/guide/tti-naiipyo',
+  image: 'guide-tti-naiipyo.png',
+  imageAlt: '띠별 나이표',
+});
 
 /**
  * 하루에 한 번 페이지를 다시 만든다.

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/pageMeta';
 import Link from 'next/link';
 import AdSlot from '@/components/AdSlot';
 import JaeCalculator from '@/components/JaeCalculator';
@@ -6,12 +7,15 @@ import JsonLd from '@/components/JsonLd';
 import { AD_SLOTS } from '@/lib/adsense';
 import { toolJsonLd, breadcrumbJsonLd } from '@/lib/jsonLd';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: '49재·삼우제 계산기 | 우리집 생신표',
   description: '돌아가신 날을 넣으면 초재부터 49재까지, 그리고 삼우제 날짜를 계산해 드려요. 49재는 돌아가신 날을 1일로 세어 48일 뒤입니다.',
   keywords: ['49재 계산', '사십구재 계산기', '삼우제 날짜', '49재 날짜', '초재 이재', '재 지내는 날'],
-  alternates: { canonical: '/sasipgujae' },
-};
+  path: '/sasipgujae',
+  image: 'sasipgujae.png',
+  imageAlt: '49재·삼우제 계산기',
+  shareDescription: '돌아가신 날을 넣으면 삼우제와 초재부터 49재까지 날짜를 한 번에 알려드려요.',
+});
 
 export default function SasipgujaePage() {
   return (

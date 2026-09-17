@@ -1,16 +1,19 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/pageMeta';
 import Link from 'next/link';
 import GuideJsonLd from '@/components/GuideJsonLd';
 import AdSlot from '@/components/AdSlot';
 import { AD_SLOTS } from '@/lib/adsense';
 import { getSeasonalDaysForYear } from '@/lib/seasonalDays';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: '올해 명절·절기 날짜 | 우리집 생신표',
   description: '설날, 정월대보름, 단오, 칠석, 추석, 동지, 한식이 올해 양력으로 언제인지 한눈에. 음력 명절이 매년 달라지는 이유도 함께 정리했습니다.',
   keywords: ['올해 설날', '올해 추석', '정월대보름 날짜', '단오 날짜', '칠석', '동지 날짜', '한식 날짜', '명절 날짜', '절기'],
-  alternates: { canonical: '/guide/myeongjeol-jeolgi' },
-};
+  path: '/guide/myeongjeol-jeolgi',
+  image: 'guide-myeongjeol-jeolgi.png',
+  imageAlt: '올해 명절·절기 날짜',
+});
 
 /**
  * 하루에 한 번 페이지를 다시 만든다.

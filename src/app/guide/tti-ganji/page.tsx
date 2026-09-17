@@ -1,16 +1,19 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/pageMeta';
 import Link from 'next/link';
 import GuideJsonLd from '@/components/GuideJsonLd';
 import AdSlot from '@/components/AdSlot';
 import { AD_SLOTS } from '@/lib/adsense';
 import { getGanji } from '@/lib/ganji';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: '내 띠와 간지 알아보기 | 우리집 생신표',
   description: '무슨 띠인지, 간지가 무엇인지 알아보세요. 설날 전에 태어나면 띠가 달라지는 이유와 연도별 띠 표를 정리했습니다.',
   keywords: ['띠 계산', '무슨 띠', '간지 계산', '띠 나이표', '갑자 육십갑자', '설날 전 출생 띠', '병오년', '을사년'],
-  alternates: { canonical: '/guide/tti-ganji' },
-};
+  path: '/guide/tti-ganji',
+  image: 'guide-tti-ganji.png',
+  imageAlt: '내 띠와 간지 알아보기',
+});
 
 /**
  * 하루에 한 번 페이지를 다시 만든다.

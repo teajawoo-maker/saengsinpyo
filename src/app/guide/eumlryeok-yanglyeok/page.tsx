@@ -1,15 +1,18 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/pageMeta';
 import Link from 'next/link';
 import GuideJsonLd from '@/components/GuideJsonLd';
 import AdSlot from '@/components/AdSlot';
 import { AD_SLOTS } from '@/lib/adsense';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: '음력과 양력의 차이 | 우리집 생신표',
   description: '음력 생일이 왜 해마다 양력 날짜가 달라지는지, 11일씩 당겨지는 이유와 윤달이 생기는 원리를 쉽게 설명합니다.',
   keywords: ['음력 양력 차이', '음력이란', '양력이란', '음력 생일 왜 다른가', '태음태양력', '음력 원리', '윤달 이유'],
-  alternates: { canonical: '/guide/eumlryeok-yanglyeok' },
-};
+  path: '/guide/eumlryeok-yanglyeok',
+  image: 'guide-eumlryeok-yanglyeok.png',
+  imageAlt: '음력과 양력의 차이',
+});
 
 export default function EumlryeokYanglyeokPage() {
   return (

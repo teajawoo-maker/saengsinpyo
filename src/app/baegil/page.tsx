@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/pageMeta';
 import Link from 'next/link';
 import AdSlot from '@/components/AdSlot';
 import BaegilCalculator from '@/components/BaegilCalculator';
@@ -6,12 +7,15 @@ import JsonLd from '@/components/JsonLd';
 import { AD_SLOTS } from '@/lib/adsense';
 import { toolJsonLd, breadcrumbJsonLd } from '@/lib/jsonLd';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: '백일·돌 계산기 | 우리집 생신표',
   description: '아기 태어난 날을 넣으면 50일, 백일, 200일, 첫돌 날짜를 정확히 계산해 드려요. 백일은 태어난 날을 1일로 세어 99일 뒤입니다.',
   keywords: ['백일 계산', '백일 계산기', '아기 백일', '돌 계산', '첫돌 날짜', '200일 계산', '50일 계산'],
-  alternates: { canonical: '/baegil' },
-};
+  path: '/baegil',
+  image: 'baegil.png',
+  imageAlt: '백일·돌 계산기',
+  shareDescription: '아기 태어난 날만 넣으면 50일·백일·200일·첫돌 날짜를 바로 알려드려요. 하루 틀리기 쉬운 백일, 정확하게.',
+});
 
 export default function BaegilPage() {
   return (

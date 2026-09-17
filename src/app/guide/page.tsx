@@ -1,14 +1,17 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/pageMeta';
 import Link from 'next/link';
 import { GUIDES, guidePath } from '@/lib/guides';
 import JsonLd from '@/components/JsonLd';
 import { guideListJsonLd, breadcrumbJsonLd } from '@/lib/jsonLd';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: '음력 생일 가이드 | 우리집 생신표',
   description: '윤달 생일 계산법, 음력 30일 없는 해 처리, 부모님 음력 생신 양력 변환 방법을 알아보세요.',
-  alternates: { canonical: '/guide' },
-};
+  path: '/guide',
+  image: 'guide.png',
+  imageAlt: '음력 생일 가이드',
+});
 
 
 export default function GuidePage() {

@@ -1,16 +1,19 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/pageMeta';
 import Link from 'next/link';
 import AdSlot from '@/components/AdSlot';
 import GuideJsonLd from '@/components/GuideJsonLd';
 import { AD_SLOTS } from '@/lib/adsense';
 import { getSolarForYears } from '@/lib/lunarConverter';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: '추석 벌초·성묘는 언제 하나요? | 우리집 생신표',
   description: '올해 추석 날짜와 연휴, 벌초 시기, 성묘 가는 날, 차례 시간을 정리했습니다. 추석이 해마다 양력으로 달라지는 이유도 함께 설명합니다.',
   keywords: ['올해 추석', '추석 연휴', '벌초 시기', '벌초 언제', '성묘 날짜', '추석 차례 시간', '백중', '한가위'],
-  alternates: { canonical: '/guide/chuseok-beolcho' },
-};
+  path: '/guide/chuseok-beolcho',
+  image: 'guide-chuseok-beolcho.png',
+  imageAlt: '추석 벌초·성묘는 언제 하나요?',
+});
 
 /**
  * 하루에 한 번 페이지를 다시 만든다.
