@@ -88,6 +88,16 @@ const CARDS = [
     chips: ['한국천문연구원 데이터', '윤달·30일 원칙'],
     url: 'saengsinpyo.com/about',
   },
+  {
+    file: 'privacy.png',
+    theme: 'guide',
+    emoji: '🔒',
+    label: '우리집 생신표',
+    headline: ['개인정보처리방침'],
+    sub: '입력한 생일은 서버로 가지 않아요',
+    chips: ['기기에만 저장', '광고 쿠키 안내'],
+    url: 'saengsinpyo.com/privacy',
+  },
   ...GUIDES.map(g => ({
     file: `guide-${g.slug}.png`,
     theme: 'guide',

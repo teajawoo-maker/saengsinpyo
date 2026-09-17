@@ -164,6 +164,11 @@ export default function HomeContent() {
         <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
           입력한 정보는 이 기기에만 저장되며 운영자 서버로 전송되지 않습니다.
         </p>
+        <p className="text-xs mt-1">
+          <Link href="/privacy" style={{ color: 'var(--text-muted)', textDecoration: 'underline' }}>
+            개인정보처리방침
+          </Link>
+        </p>
       </footer>
 
     </main>

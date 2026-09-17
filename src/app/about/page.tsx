@@ -89,6 +89,11 @@ export default function AboutPage() {
             style={{ background: 'var(--bg-card)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }}>
             📧 teajawoo@gmail.com
           </a>
+          <p className="mt-4">
+            <Link href="/privacy" className="text-xs" style={{ color: 'var(--text-muted)', textDecoration: 'underline' }}>
+              개인정보처리방침
+            </Link>
+          </p>
         </div>
       </article>
     </main>
