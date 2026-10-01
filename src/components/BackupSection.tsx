@@ -53,7 +53,7 @@ export default function BackupSection({ count }: Props) {
           생신표 백업
         </h2>
         <p className="text-xs mb-4 leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-          생신표는 이 기기에만 저장돼요. 휴대폰을 바꾸거나 브라우저 기록을 지우면
+          생신표는 이 기기에만 저장돼요. 기기를 바꾸거나 브라우저 기록을 지우면
           사라지니, 파일로 백업해 두세요.
         </p>
 

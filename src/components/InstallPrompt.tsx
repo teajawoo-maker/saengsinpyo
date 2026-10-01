@@ -29,6 +29,15 @@ function isStandalone(): boolean {
   );
 }
 
+/**
+ * 손가락으로 쓰는 기기인지. PC와 휴대폰은 추가되는 곳이 달라서
+ * (바탕화면 / 홈 화면) 안내 문구를 다르게 써야 한다.
+ */
+function isTouchDevice(): boolean {
+  if (typeof window === 'undefined') return true;
+  return window.matchMedia('(pointer: coarse)').matches;
+}
+
 function isIos(): boolean {
   if (typeof navigator === 'undefined') return false;
   return /iphone|ipad|ipod/i.test(navigator.userAgent);
@@ -61,6 +70,10 @@ export default function InstallPrompt() {
     () => isIos() && !isStandalone() && !wasDismissed(),
     () => false
   );
+
+  // 서버에서는 알 수 없으니 휴대폰 기준으로 그리고, 브라우저에서 다시 읽는다
+  const touch = useSyncExternalStore(noSubscribe, isTouchDevice, () => true);
+  const place = touch ? '홈 화면' : '바탕화면';
 
   useEffect(() => {
     // 이미 홈 화면에서 열었거나, 전에 닫았으면 끝
@@ -106,12 +119,12 @@ export default function InstallPrompt() {
         </span>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>
-            홈 화면에 두고 쓰세요
+            {place}에 두고 쓰세요
           </p>
           {deferred ? (
             <>
               <p className="text-xs mt-1 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-                앱처럼 한 번에 열립니다. 저장한 생신도 그대로 있어요.
+                {touch ? '앱처럼 한 번에 열립니다.' : '브라우저 주소를 치지 않고 바로 열립니다.'} 저장한 생신도 그대로 있어요.
               </p>
               <div className="flex gap-2 mt-3">
                 <button

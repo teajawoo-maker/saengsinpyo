@@ -19,12 +19,17 @@ export default function BottomNav() {
 
   return (
     <nav aria-label="주요 메뉴"
-      className="fixed bottom-0 left-0 right-0 z-40 flex justify-around items-center px-2 py-2"
+      className="fixed bottom-0 left-0 right-0 z-40 px-2 py-2"
       style={{
         background: 'var(--bg-card)',
         borderTop: '1px solid var(--border-light)',
         paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))',
       }}>
+      {/*
+        띠는 화면 끝까지 늘리되 메뉴는 본문과 같은 폭 안에 모은다.
+        PC처럼 넓은 화면에서 세 개가 양끝으로 흩어지면 한 묶음으로 안 보인다.
+      */}
+      <div className="max-w-md mx-auto flex justify-around items-center">
       {ITEMS.map(item => {
         // 하위 문서(/guide/yundal-saengil)에서도 가이드 탭이 켜져야 한다
         const active = item.href === '/'
@@ -46,6 +51,7 @@ export default function BottomNav() {
           </Link>
         );
       })}
+      </div>
     </nav>
   );
 }

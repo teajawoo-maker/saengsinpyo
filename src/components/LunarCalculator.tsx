@@ -175,7 +175,7 @@ export default function LunarCalculator({ initialItem }: Props) {
   }, [form, saveLabel, birthYear, birthLunarYear]);
 
   /**
-   * 휴대폰 달력에 넣어 알림을 받는다.
+   * 달력 앱에 넣어 알림을 받는다.
    *
    * 브라우저 알림으로는 몇 달 뒤 날짜를 제때 울려 줄 수 없다. 탭을 닫으면
    * 예약이 사라지기 때문이다. 달력 앱은 꺼 두어도 울리므로 그쪽에 맡긴다.
@@ -561,7 +561,7 @@ export default function LunarCalculator({ initialItem }: Props) {
                   )}
                   {!showSaveInput && (
                     <p className="text-xs mt-2 text-center" style={{ color: 'var(--text-muted)' }}>
-                      알림 받기를 누르면 휴대폰 달력에 넣어 3일 전에 알려드려요
+                      알림 받기를 누르면 쓰시는 달력 앱에 넣어 3일 전에 알려드려요
                     </p>
                   )}
                 </div>

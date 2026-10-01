@@ -174,7 +174,7 @@ export default function SavedBirthdays({ onLoad }: Props) {
           </button>
         </div>
         <p className="text-xs mt-2 text-center" style={{ color: 'var(--text-muted)' }}>
-          휴대폰 달력에 10년치를 넣어 생신 3일 전에 알려드려요
+          쓰시는 달력 앱에 10년치를 넣어 생신 3일 전에 알려드려요
         </p>
       </div>
     </div>
