@@ -13,7 +13,8 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: '/',
     display: 'standalone',
     background_color: '#fff8f0',
-    theme_color: '#ef6c2f',
+    // layout의 themeColor와 같은 값이어야 설치했을 때 상태바 색이 사이트와 맞는다
+    theme_color: '#c94a0d',
     lang: 'ko',
     categories: ['utilities', 'lifestyle'],
     icons: [

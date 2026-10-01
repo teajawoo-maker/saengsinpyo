@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { convertLunar, solarToLunar, formatDDay, lunarBirthToSolarYear } from '@/lib/lunarConverter';
 import { ageAtBirthday, getMilestone } from '@/lib/age';
 import { getGanji } from '@/lib/ganji';
+import { downloadIcs } from '@/lib/ics';
 import { saveBirthday } from '@/lib/storage';
 import type { LunarInput, ConvertResult, LeapStatus, ShortMonthFallback, LeapFallback, SolarResult, InputMode } from '@/types/lunar';
 import type { SavedBirthday } from '@/lib/storage';
@@ -171,6 +172,33 @@ export default function LunarCalculator({ initialItem }: Props) {
       setSavedMsg('저장하지 못했어요. 시크릿 모드이거나 저장 공간이 부족한지 확인해 주세요.');
       setTimeout(() => { setSavedMsg(''); setSaveFailed(false); }, 6000);
     }
+  }, [form, saveLabel, birthYear, birthLunarYear]);
+
+  /**
+   * 휴대폰 달력에 넣어 알림을 받는다.
+   *
+   * 브라우저 알림으로는 몇 달 뒤 날짜를 제때 울려 줄 수 없다. 탭을 닫으면
+   * 예약이 사라지기 때문이다. 달력 앱은 꺼 두어도 울리므로 그쪽에 맡긴다.
+   * 파일에는 앞으로 10년치와 '3일 전' 알림이 들어 있다.
+   */
+  const handleRemind = useCallback(() => {
+    const month = parseInt(form.month);
+    const day = parseInt(form.day);
+    if (!month || !day) return;
+    downloadIcs([{
+      id: 'once',
+      label: saveLabel.trim() || `음력 ${form.month}월 ${form.day}일`,
+      input: {
+        month, day,
+        leapStatus: form.leapStatus,
+        shortMonthFallback: form.shortMonthFallback,
+        leapFallback: form.leapFallback,
+      },
+      birthYear,
+      birthLunarYear,
+      savedAt: Date.now(),
+      starred: false,
+    }]);
   }, [form, saveLabel, birthYear, birthLunarYear]);
 
 
@@ -518,11 +546,23 @@ export default function LunarCalculator({ initialItem }: Props) {
                       </button>
                     </div>
                   ) : (
-                    <button type="button" onClick={() => setShowSaveInput(true)}
-                      className="w-full py-2.5 rounded-xl text-sm font-medium transition-all"
-                      style={{ background: 'var(--bg)', color: 'var(--text-secondary)', border: '1.5px solid var(--border)' }}>
-                      ⭐ 즐겨찾기에 저장하기
-                    </button>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button type="button" onClick={() => setShowSaveInput(true)}
+                        className="py-2.5 rounded-xl text-sm font-medium transition-all"
+                        style={{ background: 'var(--bg)', color: 'var(--text-secondary)', border: '1.5px solid var(--border)' }}>
+                        ⭐ 저장하기
+                      </button>
+                      <button type="button" onClick={handleRemind}
+                        className="py-2.5 rounded-xl text-sm font-medium transition-all"
+                        style={{ background: 'var(--bg)', color: 'var(--text-secondary)', border: '1.5px solid var(--border)' }}>
+                        🔔 알림 받기
+                      </button>
+                    </div>
+                  )}
+                  {!showSaveInput && (
+                    <p className="text-xs mt-2 text-center" style={{ color: 'var(--text-muted)' }}>
+                      알림 받기를 누르면 휴대폰 달력에 넣어 3일 전에 알려드려요
+                    </p>
                   )}
                 </div>
               </>

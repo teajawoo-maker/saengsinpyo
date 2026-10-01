@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { subscribe, getRawSnapshot, getServerSnapshot, type SavedBirthday } from '@/lib/storage';
 import { AD_SLOTS } from '@/lib/adsense';
 import AdSlot from '@/components/AdSlot';
+import InstallPrompt from '@/components/InstallPrompt';
 
 /*
   계산기는 첫 화면의 본문이자 LCP 요소다. ssr:false로 두면 서버가 보내는
@@ -95,6 +96,9 @@ export default function HomeContent() {
 
       {/* 백업 — 저장한 생신이 있을 때만 안내한다 */}
       {savedCount > 0 && <BackupSection count={savedCount} />}
+
+      {/* 홈 화면에 추가 안내. 한 번 닫으면 다시 뜨지 않는다 */}
+      <InstallPrompt />
 
       {/* 다른 날짜 계산기. 어디서도 링크가 없으면 사람도 검색엔진도 못 찾는다 */}
       <section className="max-w-md mx-auto px-4 pb-6">

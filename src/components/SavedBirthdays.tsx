@@ -170,11 +170,11 @@ export default function SavedBirthdays({ onLoad }: Props) {
           <button type="button" onClick={() => downloadIcs(items)}
             className="py-2.5 rounded-xl text-sm font-medium transition-transform active:scale-95"
             style={{ background: 'var(--bg)', color: 'var(--text-secondary)', border: '1.5px solid var(--border)' }}>
-            📅 캘린더 저장
+            🔔 알림 받기
           </button>
         </div>
         <p className="text-xs mt-2 text-center" style={{ color: 'var(--text-muted)' }}>
-          캘린더 저장은 앞으로 10년치 생신을 한 번에 넣어요
+          휴대폰 달력에 10년치를 넣어 생신 3일 전에 알려드려요
         </p>
       </div>
     </div>

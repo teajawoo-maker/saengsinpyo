@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { BASE_URL, NAVER_SITE_VERIFICATION } from '@/lib/siteConfig';
-import { ADSENSE_CLIENT, isAdsenseEnabled } from '@/lib/adsense';
+import { isAdsenseEnabled } from '@/lib/adsense';
 import BottomNav from '@/components/BottomNav';
+import AdsenseScript from '@/components/AdsenseScript';
+import ServiceWorker from '@/components/ServiceWorker';
 
 export const metadata: Metadata = {
   title: '우리집 생신표 | 음력 생일 양력 변환',
@@ -78,22 +80,16 @@ export default function RootLayout({
         <meta name="msvalidate.01" content="0451F4D77459E885AAAE2DB1A8DDE96A" />
 
         {/*
-          애드센스 스크립트.
-          next/script의 lazyOnload로 두면 자바스크립트가 나중에 삽입해서
-          원본 HTML에는 태그가 남지 않는다. 애드센스 크롤러는 원본 HTML을
-          읽으므로 소유권 확인에 실패한다. 그래서 head에 직접 넣는다.
-          async라 첫 화면 그리는 것을 막지는 않는다.
+          애드센스.
+
+          스크립트 자체는 AdsenseScript가 화면을 다 그린 뒤에 불러온다.
+          head에 두면 첫 화면을 그리는 동안 261KB를 받아 모바일 성능이
+          65점까지 떨어졌다. 미리 연결만 해 두면 나중에 받을 때 빨라진다.
         */}
         {isAdsenseEnabled && (
           <>
-            {/* 광고 서버와 미리 연결해 두면 스크립트를 받는 시간이 줄어든다 */}
             <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
             <link rel="preconnect" href="https://googleads.g.doubleclick.net" crossOrigin="anonymous" />
-            <script
-              async
-              crossOrigin="anonymous"
-              src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
-            />
           </>
         )}
         <link rel="alternate" type="application/rss+xml" title="우리집 생신표 RSS" href={`${BASE_URL}/feed.xml`} />
@@ -101,6 +97,8 @@ export default function RootLayout({
       <body>
         {children}
         <BottomNav />
+        <AdsenseScript />
+        <ServiceWorker />
 
       </body>
     </html>
