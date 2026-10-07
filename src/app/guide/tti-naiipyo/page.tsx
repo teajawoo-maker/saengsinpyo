@@ -7,14 +7,29 @@ import { AD_SLOTS } from '@/lib/adsense';
 import { getGanji } from '@/lib/ganji';
 import { koreanAge, getMilestone } from '@/lib/age';
 
-export const metadata: Metadata = pageMetadata({
-  title: '띠별 나이표 | 우리집 생신표',
-  description: '올해 기준 띠별 나이를 한눈에. 쥐띠부터 돼지띠까지 태어난 해와 만 나이·세는나이를 정리했습니다. 설날 전에 태어나면 띠가 달라지는 점도 함께 안내합니다.',
-  keywords: ['띠별 나이', '띠 나이표', '올해 나이', '만 나이 계산', '세는나이', '무슨 띠', '몇 살', '띠 계산'],
-  path: '/guide/tti-naiipyo',
-  image: 'guide-tti-naiipyo.png',
-  imageAlt: '띠별 나이표',
-});
+/**
+ * 제목과 설명은 올해를 넣어 매번 만든다. 글에 2026을 적어 두면 해가 바뀐
+ * 뒤 검색 결과에 지난해 제목이 남는다. 페이지가 하루에 한 번 다시 만들어지므로
+ * 해가 바뀌면 제목도 따라간다.
+ *
+ * 서치 콘솔에서 이 쪽이 370번 노출되고 클릭은 0이었다. 사람들이 실제로 친 말은
+ * '32살 띠', '10살 띠', '14살 띠' 같은 "몇 살이 무슨 띠"였는데, 예전 제목은
+ * 띠에서 나이를 찾는 쪽(띠별 나이표)만 말하고 있었다. 나이에서 띠를 찾는다는
+ * 점을 제목 앞쪽에 드러낸다.
+ */
+export function generateMetadata(): Metadata {
+  const year = new Date().getFullYear();
+  return pageMetadata({
+    title: `${year}년 띠별 나이표 — 나이로 띠 찾기 | 우리집 생신표`,
+    description: `몇 살이 무슨 띠인지 바로 찾으세요. ${year}년 기준 만 나이·세는나이로 쥐띠부터 돼지띠까지 태어난 해를 정리했어요. 1~2월생은 설날 기준으로 띠가 달라집니다.`,
+    keywords: ['몇 살 무슨 띠', '나이로 띠 찾기', '띠별 나이', '띠 나이표', '만 나이', '세는나이', '무슨 띠', '출생연도 띠'],
+    path: '/guide/tti-naiipyo',
+    image: 'guide-tti-naiipyo.png',
+    imageAlt: '띠별 나이표',
+    shareTitle: `${year}년 띠별 나이표 — 몇 살이 무슨 띠?`,
+    shareDescription: '나이를 보면 띠와 태어난 해가 바로 나와요. 만 나이·세는나이 모두, 환갑·진갑 표시까지.',
+  });
+}
 
 /**
  * 하루에 한 번 페이지를 다시 만든다.
@@ -53,8 +68,9 @@ export default function TtiNaiipyoPage() {
               {THIS_YEAR}년 띠별 나이표
             </h1>
             <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-              띠만 알면 몇 살인지 바로 찾을 수 있어요. 괄호 안은 <strong>만 나이</strong>,
-              그 뒤는 세는나이입니다.
+              띠를 알면 몇 살인지, 나이를 알면 무슨 띠인지 바로 찾을 수 있어요.
+              <strong>나이로 찾으려면</strong> 아래에서 괄호 안 숫자를 찾으세요.
+              괄호 안은 <strong>만 나이</strong>, 그 뒤는 세는나이입니다.
             </p>
           </header>
 
