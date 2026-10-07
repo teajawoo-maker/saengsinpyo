@@ -1,9 +1,8 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { BASE_URL, NAVER_SITE_VERIFICATION } from '@/lib/siteConfig';
-import { isAdsenseEnabled } from '@/lib/adsense';
+import { ADSENSE_CLIENT, isAdsenseEnabled } from '@/lib/adsense';
 import BottomNav from '@/components/BottomNav';
-import AdsenseScript from '@/components/AdsenseScript';
 import ServiceWorker from '@/components/ServiceWorker';
 
 export const metadata: Metadata = {
@@ -80,16 +79,25 @@ export default function RootLayout({
         <meta name="msvalidate.01" content="0451F4D77459E885AAAE2DB1A8DDE96A" />
 
         {/*
-          애드센스.
+          애드센스 스크립트.
 
-          스크립트 자체는 AdsenseScript가 화면을 다 그린 뒤에 불러온다.
-          head에 두면 첫 화면을 그리는 동안 261KB를 받아 모바일 성능이
-          65점까지 떨어졌다. 미리 연결만 해 두면 나중에 받을 때 빨라진다.
+          원본 HTML에 태그가 있어야 애드센스 심사 크롤러가 알아본다. 화면을 그린
+          뒤에 스크립트로 넣으면(AdsenseScript) 처음 소유 확인이 실패했을 때와
+          같은 모양이 된다. 그래서 승인이 확인될 때까지는 head에 그대로 둔다.
+          async라 첫 화면 그리는 것을 막지는 않는다.
+
+          승인이 확인되면 AdsenseScript(src/components)로 옮기면 모바일 성능이
+          65점에서 82점으로 오른다. 재 보았다.
         */}
         {isAdsenseEnabled && (
           <>
             <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
             <link rel="preconnect" href="https://googleads.g.doubleclick.net" crossOrigin="anonymous" />
+            <script
+              async
+              crossOrigin="anonymous"
+              src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+            />
           </>
         )}
         <link rel="alternate" type="application/rss+xml" title="우리집 생신표 RSS" href={`${BASE_URL}/feed.xml`} />
@@ -97,7 +105,6 @@ export default function RootLayout({
       <body>
         {children}
         <BottomNav />
-        <AdsenseScript />
         <ServiceWorker />
 
       </body>
